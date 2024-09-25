@@ -4,6 +4,7 @@
 
 static Logger * _logger = NULL;
 static boolean _logIgnoredLexemes = true;
+static unsigned int separators = 1;
 
 void initializeFlexActionsModule() {
 	_logIgnoredLexemes = getBooleanOrDefault("LOG_IGNORED_LEXEMES", _logIgnoredLexemes);
@@ -49,6 +50,7 @@ void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCon
 }
 
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	separators += lexicalAnalyzerContext->length;
 	if (_logIgnoredLexemes) {
 		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	}
@@ -66,8 +68,32 @@ Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	return INTEGER;
 }
 
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	if (!separators)
+		return UnknownLexemeAction(lexicalAnalyzerContext);
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	separators = 0;
+	lexicalAnalyzerContext->semanticValue->integer = 1;
+	return INTEGER;
+}
+
+Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	separators = 1;
+	lexicalAnalyzerContext->semanticValue->token = token;
+	return token;
+}
+
+Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	if (!separators)
+		return UnknownLexemeAction(lexicalAnalyzerContext);
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	return NOT;
+}
+
 Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	separators = 1;
 	lexicalAnalyzerContext->semanticValue->token = token;
 	return token;
 }

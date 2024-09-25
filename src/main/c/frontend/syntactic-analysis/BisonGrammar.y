@@ -13,6 +13,7 @@
 	int integer;
 	Token token;
 
+
 	/** Non-terminals. */
 
 	Constant * constant;
@@ -44,6 +45,10 @@
 %token <token> MUL
 %token <token> OPEN_PARENTHESIS
 %token <token> SUB
+%token <token> OR
+%token <token> NOT
+%token <token> AND
+
 
 %token <token> UNKNOWN
 
@@ -58,8 +63,10 @@
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
  */
-%left ADD SUB
-%left MUL DIV
+%left OR
+%left AND
+%left NOT
+
 
 %%
 
@@ -68,10 +75,9 @@
 program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
-	| expression[left] MUL expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
-	| expression[left] SUB expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
+expression: expression[left] OR expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
+	| expression[left] AND expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
+	| NOT expression[right]											{ $$ = ArithmeticExpressionSemanticAction($right, $right, MULTIPLICATION); }
 	| factor														{ $$ = FactorExpressionSemanticAction($1); }
 	;
 
@@ -80,6 +86,7 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactor
 	;
 
 constant: INTEGER													{ $$ = IntegerConstantSemanticAction($1); }
+	|%empty															{ $$ = IntegerConstantSemanticAction(0); }
 	;
 
 %%
