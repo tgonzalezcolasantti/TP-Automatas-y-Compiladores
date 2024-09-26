@@ -20,7 +20,7 @@ void shutdownGeneratorModule() {
 
 static const char _expressionTypeToCharacter(const ExpressionType type);
 static void _generateConstant(const unsigned int indentationLevel, char * constant);
-static void _generateEpilogue(const int value);
+static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
 static void _generateTag(const unsigned int indentationLevel, Tag * t);
@@ -67,8 +67,8 @@ static void _generateConstant(const unsigned int indentationLevel, char * consta
  * Creates the epilogue of the generated output, that is, the final lines that
  * completes a valid Latex document.
  */
-static void _generateEpilogue(const int value) {
-	_output(0, "%s%d%s",
+static void _generateEpilogue(void) {
+	_output(0, "%s",
 		"    \\end{forest}\n"
 		"\\end{document}\n\n"
 	);
@@ -345,6 +345,6 @@ void generate(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);
-	_generateEpilogue(compilerState->value);
+	_generateEpilogue();
 	logDebugging(_logger, "Generation is done.");
 }
