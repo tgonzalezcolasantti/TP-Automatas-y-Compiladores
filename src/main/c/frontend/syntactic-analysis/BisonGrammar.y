@@ -49,6 +49,8 @@
 
 /** Terminals. */
 %token <string> STRING				//OK
+%token <string> STRMATCH			//OK
+
 %token <string> STRMETA				//OK
 %token <string> INTMETA				//OK
 %token <string> DATEMETA			//OK
@@ -57,6 +59,8 @@
 %token <string> INTEGER				//OK
 %token <string> DATE				//OK
 %token <string> SEMANTICSIZE		//OK
+%token <string> RECALL				//OK
+
 
 
 %token <token> CLOSE_PARENTHESIS	//OK
@@ -78,8 +82,6 @@
 %token <token> ORDERLASTEDIT		//OK
 %token <token> ORDERSIZE			//OK
 %token <token> ORDERRANDOM			//OK	
-
-%token <token> RECALL				//OK
 
 %token <token> UNKNOWN
 
@@ -160,10 +162,11 @@ metatag: STRMETA string												{ $$ = StringMetatagSemanticAction($1, $2); }
 	| INTMETA integer												{ $$ = IntegerMetatagSemanticAction($1, $2); }
 	| DATEMETA date													{ $$ = DateMetatagSemanticAction($1, $2); }
 	| SIZEMETA size													{ $$ = SizeMetatagSemanticAction($1, $2); }
-	| RECALL string													{ $$ = RecallMetatagSemanticAction($2); }
+	| RECALL string													{ $$ = RecallMetatagSemanticAction($1, $2); }
 	;
 
-string: STRING														{ $$ = StringSemanticAction($1); }
+string: STRING														{ $$ = StringSemanticAction($1, false); }
+	| STRMATCH														{ $$ = StringSemanticAction($1, true); }
 	;
 
 integer: INTEGER													{ $$ = IntegerSemanticAction($1); }

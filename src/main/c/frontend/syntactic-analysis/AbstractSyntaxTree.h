@@ -20,6 +20,7 @@ typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
 typedef enum MetaType MetaType;
 typedef enum QuantifierType QuantifierType;
+typedef enum MatchType MatchType;
 
 
 
@@ -42,6 +43,11 @@ typedef struct Tag Tag;						//OKOK
 /**
  * Node types for the Abstract Syntax Tree (AST).
  */
+
+enum MatchType {
+	REGULAR,
+	LIKE
+};
 
 enum ExpressionType {
 	OPAND,
@@ -77,7 +83,6 @@ enum MetaType {
 	TYPESIZE,
 	TYPERECALL
 };
-
 
 enum QuantifierType {
 	EQUALS,
@@ -158,6 +163,7 @@ struct Metatag {
 
 struct String {
 	char * string;
+	MatchType match;
 };
 
 struct Integer {

@@ -56,9 +56,9 @@ Metatag * StringMetatagSemanticAction(char * metatag, String * argument);
 Metatag * IntegerMetatagSemanticAction(char * metatag, Integer * argument);
 Metatag * DateMetatagSemanticAction(char * metatag, Date * argument);
 Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument);
-Metatag * RecallMetatagSemanticAction(String * recallable);
+Metatag * RecallMetatagSemanticAction(char * metatag, String * recallable);
 
-String * StringSemanticAction(char * string);
+String * StringSemanticAction(char * string, boolean match);
 
 Integer * IntegerSemanticAction(char * integer);
 Integer * RangedIntegerSemanticAction(char * start, char * end);

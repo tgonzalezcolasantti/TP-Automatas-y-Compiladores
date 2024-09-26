@@ -36,6 +36,7 @@ static void _generateInteger(const unsigned int indentationLevel, Integer * i);
 static void _generateDate(const unsigned int indentationLevel, Date * d);
 static void _generateSize(const unsigned int indentationLevel, SemanticSize * s);
 static void _generateQuantifier(const unsigned int indentationLevel, QuantifierType q);
+static void _generateString(const unsigned int indentationLevel, String * s);
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
@@ -59,7 +60,7 @@ static const char _expressionTypeToCharacter(const ExpressionType type) {
  * Generates the output of a constant.
  */
 static void _generateConstant(const unsigned int indentationLevel, char * constant) {
-	_output(1 + indentationLevel, "%s%s%s", "[ $", constant, "$, circle, draw, black]\n");
+	_output(1 + indentationLevel, "%s%s%s", "[ $", constant, "$, draw, black]\n");
 }
 
 /**
@@ -126,7 +127,7 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 static void _generateTag(const unsigned int indentationLevel, Tag * t) {
 	_output(indentationLevel, "%s", "[ $T$, circle, draw, cyan\n");
 	if (t->tagname)
-		_generateConstant(indentationLevel + 1, t->tagname->string);
+		_generateString(indentationLevel + 1, t->tagname);
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -136,7 +137,7 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	switch(m->type) {
 		case TYPESTRING:
 		case TYPERECALL:
-			_generateConstant(indentationLevel, m->string->string);
+			_generateString(indentationLevel, m->string);
 			break;
 		case TYPEINTEGER:
 			_generateInteger(indentationLevel, m->integer);
@@ -174,7 +175,7 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 }
 
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s) {
-	_output(indentationLevel, "%s", "[ $S$, circle, draw, maroon\n");
+	_output(indentationLevel, "%s", "[ $S$, circle, draw, orange\n");
 	_generateSubquery(indentationLevel + 1, s->subquery);
 	if (s->subqueries) {
 		_generateSubqueries(indentationLevel + 1, s->subqueries);
@@ -258,6 +259,17 @@ static void _generateSize(const unsigned int indentationLevel, SemanticSize * s)
 		_generateConstant(indentationLevel + 1, s->size);
 		_generateQuantifier(indentationLevel + 1, s->quantifier);
 	}
+	_output(indentationLevel, "%s", "]\n");
+}
+
+static void _generateString(const unsigned int indentationLevel, String * s) {
+	_output(indentationLevel, "%s", "[ $STR$, circle, draw, teal\n");
+	if (s->match == LIKE){
+		_output(indentationLevel + 1, "%s", "[ $Match$, circle, draw, black!20]\n");
+	} else {
+		_output(indentationLevel + 1, "%s", "[ $Exact$, circle, draw, black!20]\n");
+	}
+	_generateConstant(indentationLevel + 1, s->string);
 	_output(indentationLevel, "%s", "]\n");
 }
 

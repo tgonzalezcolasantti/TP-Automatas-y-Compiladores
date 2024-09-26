@@ -250,19 +250,21 @@ Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument) {
 	return meta;
 }
 
-Metatag * RecallMetatagSemanticAction(String * recallable) {
+Metatag * RecallMetatagSemanticAction(char * metatag, String * recallable) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
+	meta->metatagname = metatag;
 	meta->string = recallable;
 	meta->type = TYPERECALL;
 	return meta;
 }
 
 
-String * StringSemanticAction(char * string) {
+String * StringSemanticAction(char * string, boolean match) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	String * str = calloc(1, sizeof(String));
 	str->string = string;
+	str->match = (match) ? LIKE : REGULAR;
 	return str;
 }
 

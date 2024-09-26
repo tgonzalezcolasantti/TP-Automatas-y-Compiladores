@@ -57,49 +57,49 @@ Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCon
 
 Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return STRMETA;
 }
 
 Token MetatagIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return INTMETA;
 }
 
 Token MetatagDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return DATEMETA;
 }
 
 Token MetatagSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return SIZEMETA;
 }
 
 Token MetatagOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return ORDERMETA;
 }
 
 Token MetatagRecallLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
+	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length - 1] = 0;
 	return RECALL;
 }
 
@@ -143,13 +143,16 @@ Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCont
 	return SEMANTICSIZE;
 }
 
-Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
 	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
-	return STRING;
-}
+	if (match){
+		return STRMATCH;
+	} else {
+		return STRING;
+	}}
 
 Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
@@ -174,14 +177,18 @@ Token MetaparameterOrderReverseLexemeAction(LexicalAnalyzerContext * lexicalAnal
 	return DESC;
 }
 
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	int trimmed = trim(lexicalAnalyzerContext);
 	char * copy = malloc(trimmed + 1);
 	strncpy(copy, lexicalAnalyzerContext->lexeme, trimmed);
 	copy[trimmed] = 0;
 	lexicalAnalyzerContext->semanticValue->string = copy;
-	return STRING;
+	if (match){
+		return STRMATCH;
+	} else {
+		return STRING;
+	}
 }
 
 Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token) {

@@ -23,7 +23,7 @@ void shutdownFlexActionsModule();
 
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);  //OK
 
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);  //OK
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);  //OK
 
 Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token); //OK
 Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);                 //OK
@@ -42,7 +42,7 @@ Token MetaparameterRangeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCon
 Token MetaparameterIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);
 Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterOrderReverseLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 

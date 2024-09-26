@@ -51,7 +51,7 @@ METATAG_RECALL          "recall:"
 {SPACER}*")"						        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 "{"                                         { BEGIN(SUBQUERY); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
 <SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
-<SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext()); }
+<SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 <SUBQUERYEND>{SPACER}+                      { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 {METATAG_STRING}/({WILDSTRING})             { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext()); }
@@ -72,9 +72,11 @@ METATAG_RECALL          "recall:"
 <METATAG_ARG>({DATE}|{DATETIME})            { BEGIN(INITIAL); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{SIZE}/{RANGE}                 { return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{SIZE}                         { BEGIN(INITIAL); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{WILDSTRING}                   { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{STRING}                       { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), false); }
+<METATAG_ARG>{WILDSTRING}                   { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), true); }
 
-{WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext()); }
+{STRING}                                    { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
+{WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext(), true); }
 
 {SPACER}+/{METATAG_ORDER}                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
