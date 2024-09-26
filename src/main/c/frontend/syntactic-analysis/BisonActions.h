@@ -27,10 +27,12 @@ Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 
 */
-Query * ExpressionQuerySemanticAction(CompilerState * compilerState, Expression * expression);
-Query * ExpressionWithOrderProgramSemanticAction(CompilerState * compilerState, Expression * expression, Metaorder * order);
-Query * ExpressionSubquerySemanticAction(CompilerState * compilerState, Subqueries * subqueries, Expression * expression);
-Query * ExpressionSubqueryOrderedSemanticAction(CompilerState * compilerState, Subqueries * subqueries, Expression * expression, Metaorder * order);
+Program * ProgramSemanticAction(CompilerState * compilerState, Query * query);
+
+Query * ExpressionQuerySemanticAction(Expression * expression);
+Query * ExpressionWithOrderProgramSemanticAction(Expression * expression, Metaorder * order);
+Query * ExpressionSubquerySemanticAction(Subqueries * subqueries, Expression * expression);
+Query * ExpressionSubqueryOrderedSemanticAction(Subqueries * subqueries, Expression * expression, Metaorder * order);
 
 Subqueries * SubquerySingleSemanticAction(Subquery * subquery);
 Subqueries * SubqueryRecursiveSemanticAction(Subquery * subquery, Subqueries * remaining);

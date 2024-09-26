@@ -15,6 +15,7 @@
 
 	/** Non-terminals. */
 
+	Program * program;
 	Expression * expression;
 	Factor * factor;
 	Query * query;
@@ -85,6 +86,7 @@
 %token <token> UNKNOWN
 
 /** Non-terminals. */
+%type <program> program
 %type <query> query
 %type <expression> expression
 %type <factor> factor
@@ -115,11 +117,12 @@
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 //query: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
+program: query														{ $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 
-query: expression													{ $$ = ExpressionQuerySemanticAction(currentCompilerState(), $1); }
-	| expression metaorder											{ $$ = ExpressionWithOrderProgramSemanticAction(currentCompilerState(), $1, $2); }
-	| subqueries expression											{ $$ = ExpressionSubquerySemanticAction(currentCompilerState(), $1, $2); }
-	| subqueries expression metaorder								{ $$ = ExpressionSubqueryOrderedSemanticAction(currentCompilerState(), $1, $2, $3); }
+query: expression													{ $$ = ExpressionQuerySemanticAction($1); }
+	| expression metaorder											{ $$ = ExpressionWithOrderProgramSemanticAction($1, $2); }
+	| subqueries expression											{ $$ = ExpressionSubquerySemanticAction($1, $2); }
+	| subqueries expression metaorder								{ $$ = ExpressionSubqueryOrderedSemanticAction($1, $2, $3); }
 	;
 
 subqueries: subquery												{ $$ = SubquerySingleSemanticAction($1); }
@@ -144,8 +147,8 @@ subqueryname: STRING												{ $$ = SubquerynameSemanticAction($1); }
 	;
 
 //expression: expression[left] OR expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-expression: expression[left] OR expression[right]					{ $$ = BinaryExpressionSemanticAction($left, $right, $2); }
-	| expression[left] AND expression[right]						{ $$ = BinaryExpressionSemanticAction($left, $right, $2); }
+expression: expression[left] OR expression[right]					{ $$ = BinaryExpressionSemanticAction($left, $right, OPOR); }
+	| expression[left] AND expression[right]						{ $$ = BinaryExpressionSemanticAction($left, $right, OPAND); }
 	| NOT expression[right]											{ $$ = NegatedExpressionSemanticAction($right); }
 	| factor														{ $$ = FactorExpressionSemanticAction($1); }
 	;
@@ -162,7 +165,7 @@ metatag: STRMETA string												{ $$ = StringMetatagSemanticAction($1, $2); }
 	| RECALL string													{ $$ = RecallMetatagSemanticAction($2); }
 	;
 
-string: STRING														{ $$ = StringSemanticAction($1, EXACT); }
+string: STRING														{ $$ = StringSemanticAction($1, SINGLE); }
 	| WILDCARD STRING												{ $$ = StringSemanticAction($2, SUFFIX); }
 	| STRING WILDCARD												{ $$ = StringSemanticAction($1, PREFIX); }
 	| WILDCARD STRING WILDCARD										{ $$ = StringSemanticAction($2, INFIX); }

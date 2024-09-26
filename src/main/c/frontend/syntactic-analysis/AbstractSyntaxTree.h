@@ -20,17 +20,11 @@ typedef enum MatchType MatchType;
 typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
 typedef enum MetaType MetaType;
+typedef enum QuantifierType QuantifierType;
 
 
 
-//LEGACY DEFINITIONS
-
-typedef struct Constant Constant;
-typedef struct Expression Expression;
-typedef struct Factor Factor;
 typedef struct Program Program;
-
-
 typedef struct Expression Expression;		//OK
 typedef struct Factor Factor;				//OK
 typedef struct Query Query;					//OK
@@ -73,7 +67,6 @@ enum FactorType {
 };
 
 enum FieldType {
-	EXACT,
 	RANGED,
 	UNDEFINEDRANGED
 };
@@ -93,6 +86,17 @@ enum MatchType {
 	INFIX
 };
 
+enum QuantifierType {
+	EQUALS,
+	GREATERTHAN,
+	GREATEREQUALS,
+	LESSERTHAN,
+	LESSEREQUALS
+};
+
+struct Program {
+	Query * query;
+};
 
 struct Query {
 	Subqueries * subqueries;
@@ -166,8 +170,10 @@ struct String {
 
 struct Integer {
 	union{
-		char * integer;
 		struct {
+			char * integer;
+			QuantifierType quantifier;
+		};		struct {
 			char * start;
 			char * end;
 		};
@@ -177,8 +183,10 @@ struct Integer {
 
 struct Date {
 	union{
-		char * date;
 		struct {
+			char * date;
+			QuantifierType quantifier;
+		};		struct {
 			char * start;
 			char * end;
 		};
@@ -188,7 +196,10 @@ struct Date {
 
 struct SemanticSize {
 	union{
-		char * size;
+		struct {
+			char * size;
+			QuantifierType quantifier;
+		};
 		struct {
 			char * start;
 			char * end;
@@ -245,5 +256,5 @@ void releaseString(String * str);
 void releaseInteger(Integer * integer);
 void releaseDate(Date * date);
 void releaseSemanticSize(SemanticSize * size);
-
+void releaseProgram(Program * program);
 #endif

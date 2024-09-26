@@ -15,6 +15,13 @@ void shutdownAbstractSyntaxTreeModule() {
 }
 
 /** PUBLIC FUNCTIONS */
+void releaseProgram(Program * program) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (program != NULL) {
+		releaseQuery(program->query);
+		free(program);
+	}
+}
 
 void releaseQuery(Query * query) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
@@ -154,7 +161,6 @@ void releaseInteger(Integer * integer) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (integer != NULL) {
 		switch (integer->fieldtype) {
-			case EXACT:
 			case UNDEFINEDRANGED:
 				free(integer->integer);
 				break;			
@@ -171,7 +177,6 @@ void releaseDate(Date * date) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (date != NULL) {
 		switch (date->fieldtype) {
-			case EXACT:
 			case UNDEFINEDRANGED:
 				free(date->date);
 				break;			
@@ -188,7 +193,6 @@ void releaseSemanticSize(SemanticSize * size) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (size != NULL) {
 		switch (size->fieldtype) {
-			case EXACT:
 			case UNDEFINEDRANGED:
 				free(size->size);
 				break;			
