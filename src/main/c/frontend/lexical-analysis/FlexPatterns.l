@@ -60,6 +60,7 @@ METATAG_RECALL          "recall:"
 {METATAG_ORDER}/{ORDER}                     { BEGIN(METATAG_ARG); return MetatagOrderLexemeAction(createLexicalAnalyzerContext()); }
 {METATAG_RECALL}/{STRING}                   { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
+<METATAG_ARG>{ORDER}                        { BEGIN(INITIAL); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{QUANT}                        { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{RANGE}                        { return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}/{RANGE}                  { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
@@ -69,7 +70,6 @@ METATAG_RECALL          "recall:"
 <METATAG_ARG>{SIZE}/{RANGE}                 { return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{SIZE}                         { BEGIN(INITIAL); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{WILDSTRING}                   { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{ORDER}                        { BEGIN(INITIAL); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
 
 {WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext()); }
 
