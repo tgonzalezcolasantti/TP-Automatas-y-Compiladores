@@ -34,7 +34,6 @@
 "("									        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 ")"									        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 
-[[:digit:]]+						        { return IntegerLexemeAction(createLexicalAnalyzerContext()); }
 [[:alnum:]]([[:alnum:]]|"-"|"_"|"("|")")+   { return StringLexemeAction(createLexicalAnalyzerContext()); }
 
 ([[:blank:]]|\n)+						    { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), AND); }

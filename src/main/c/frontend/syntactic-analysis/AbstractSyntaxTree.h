@@ -16,11 +16,31 @@ void shutdownAbstractSyntaxTreeModule();
 
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
+typedef enum MatchType MatchType;
+
+
+//LEGACY DEFINITIONS
 
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
 typedef struct Program Program;
+
+
+typedef struct Expression Expression;
+typedef struct Factor Factor;
+typedef struct Query Query;
+typedef struct Subqueries Subqueries;
+typedef struct Subquery Subquery;
+typedef struct Subqueryname Subqueryname;
+typedef struct Metaorder Metaorder;
+typedef struct Ordertype Ordertype;
+typedef struct Metatag Metatag;
+typedef struct String String;
+typedef struct Integer Integer;
+typedef struct Date Date;
+typedef struct SemanticSize SemanticSize;
+typedef struct Tag Tag;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -37,6 +57,13 @@ enum ExpressionType {
 enum FactorType {
 	CONSTANT,
 	EXPRESSION
+};
+
+enum MatchType {
+	EXACT,
+	PREFIX,
+	SUFFIX,
+	INFIX
 };
 
 struct Constant {

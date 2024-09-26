@@ -18,11 +18,59 @@ void shutdownBisonActionsModule();
  * Bison semantic actions.
  */
 
+/*  LEGACY ACTIONS
+
 Constant * IntegerConstantSemanticAction(const int value);
 Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
 Expression * FactorExpressionSemanticAction(Factor * factor);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
-Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
+
+*/
+Query * ExpressionQuerySemanticAction(CompilerState * compilerState, Expression * expression);
+Query * ExpressionWithOrderProgramSemanticAction(CompilerState * compilerState, Expression * expression, Metaorder * order);
+Query * ExpressionSubquerySemanticAction(CompilerState * compilerState, Subqueries * subqueries, Expression * expression);
+Query * ExpressionSubqueryOrderedSemanticAction(CompilerState * compilerState, Subqueries * subqueries, Expression * expression, Metaorder * order);
+
+Subqueries * SubquerySingleSemanticAction(Subquery * subquery);
+Subqueries * SubqueryRecursiveSemanticAction(Subquery * subquery, Subqueries * remaining);
+
+Subquery * SubquerySemanticAction(Subqueryname * name, Expression * subquery);
+Subqueryname * SubquerynameSemanticAction(char * name);
+
+Metaorder * MetaorderSemanticAction(Ordertype * order, boolean descending);
+
+Ordertype * OrdertypeSemanticAction(Token order);
+
+Expression * BinaryExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
+Expression * NegatedExpressionSemanticAction(Expression * expression);
+Expression * FactorExpressionSemanticAction(Factor * factor);
+
+Factor * ExpressionFactorSemanticAction(Expression * expression);
+Factor * TagFactorSemanticAction(Tag * tag);
+Factor * MetatagFactorSemanticAction(Metatag * metatag);
+
+Metatag * StringMetatagSemanticAction(char * metatag, String * argument);
+Metatag * IntegerMetatagSemanticAction(char * metatag, Integer * argument);
+Metatag * DateMetatagSemanticAction(char * metatag, Date * argument);
+Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument);
+Metatag * RecallMetatagSemanticAction(String * recallable);
+
+String * StringSemanticAction(char * string, MatchType match);
+
+Integer * IntegerSemanticAction(char * integer);
+Integer * RangedIntegerSemanticAction(char * start, char * end);
+Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, char * integer);
+
+Date * DateSemanticAction(char * date);
+Date * RangedDateSemanticAction(char * start, char * end);
+Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date);
+
+SemanticSize * SizeSemanticAction(char * size);
+SemanticSize * RangedSizeSemanticAction(char * start, char * end);
+SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size);
+
+Tag * TagSemanticAction(String * string);
+Tag * EmptySemanticAction();
 
 #endif
