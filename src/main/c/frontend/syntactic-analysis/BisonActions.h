@@ -38,9 +38,9 @@ Subqueries * SubqueryRecursiveSemanticAction(Subquery * subquery, Subqueries * r
 Subquery * SubquerySemanticAction(Subqueryname * name, Expression * subquery);
 Subqueryname * SubquerynameSemanticAction(char * name);
 
-Metaorder * MetaorderSemanticAction(Ordertype * order, boolean descending);
+Metaorder * MetaorderSemanticAction(Ordertypenode * order, boolean descending);
 
-Ordertype * OrdertypeSemanticAction(Token order);
+Ordertypenode * OrdertypeSemanticAction(Token order);
 
 Expression * BinaryExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
 Expression * NegatedExpressionSemanticAction(Expression * expression);

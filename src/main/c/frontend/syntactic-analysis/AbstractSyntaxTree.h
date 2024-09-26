@@ -17,6 +17,10 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum MatchType MatchType;
+typedef enum OrderType OrderType;
+typedef enum FieldType FieldType;
+typedef enum MetaType MetaType;
+
 
 
 //LEGACY DEFINITIONS
@@ -27,45 +31,173 @@ typedef struct Factor Factor;
 typedef struct Program Program;
 
 
-typedef struct Expression Expression;
-typedef struct Factor Factor;
-typedef struct Query Query;
-typedef struct Subqueries Subqueries;
-typedef struct Subquery Subquery;
-typedef struct Subqueryname Subqueryname;
-typedef struct Metaorder Metaorder;
-typedef struct Ordertype Ordertype;
-typedef struct Metatag Metatag;
-typedef struct String String;
-typedef struct Integer Integer;
-typedef struct Date Date;
-typedef struct SemanticSize SemanticSize;
-typedef struct Tag Tag;
+typedef struct Expression Expression;		//OK
+typedef struct Factor Factor;				//OK
+typedef struct Query Query;					//OK
+typedef struct Subqueries Subqueries;		//OK
+typedef struct Subquery Subquery;			//OK
+typedef struct Subqueryname Subqueryname;	//OK
+typedef struct Metaorder Metaorder;			//OK
+typedef struct Ordertypenode Ordertypenode;	//OK
+typedef struct Metatag Metatag;				//OK
+typedef struct String String;				//OK
+typedef struct Integer Integer;				//OK
+typedef struct Date Date;					//OK
+typedef struct SemanticSize SemanticSize;	//OK
+typedef struct Tag Tag;						//OK
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
  */
 
 enum ExpressionType {
-	ADDITION,
-	DIVISION,
-	FACTOR,
-	MULTIPLICATION,
-	SUBTRACTION
+	OPAND,
+	OPOR,
+	OPNOT,
+	FACTOR
+};
+
+enum OrderType {
+	CREATIONDATE,
+	LASTEDIT,
+	LIKES,
+	SIZE,
+	VIEWS,
+	RANDOM
 };
 
 enum FactorType {
-	CONSTANT,
+	TAG,
+	METATAG,
 	EXPRESSION
 };
 
-enum MatchType {
+enum FieldType {
 	EXACT,
+	RANGED,
+	UNDEFINEDRANGED
+};
+
+enum MetaType {
+	TYPESTRING,
+	TYPEINTEGER,
+	TYPEDATE,
+	TYPESIZE,
+	TYPERECALL
+};
+
+enum MatchType {
+	SINGLE,
 	PREFIX,
 	SUFFIX,
 	INFIX
 };
 
+
+struct Query {
+	Subqueries * subqueries;
+	Expression * mainQuery;
+	Metaorder * order;
+};
+
+struct Subqueries {
+	Subquery * subquery;
+	Subqueries * Subqueries;
+};
+
+struct Subquery {
+	Expression * expression;
+	Subqueryname * name;
+};
+
+struct Subquerymame {
+	char * name;
+};
+
+struct Metaorder{
+	Ordertypenode * order;
+	boolean desc;
+};
+
+struct Ordertypenode{
+	OrderType order;
+};
+
+struct Expression {
+	union {
+		Factor * factor;
+		struct {
+			Expression * leftExpression;
+			Expression * rightExpression;
+		};
+		Expression * singleExpression;
+	};
+	ExpressionType type;
+};
+
+struct Factor {
+	union {
+		Tag * tag;
+		Metatag * metatag;
+		Expression * expression;
+	};
+	FactorType type;
+};
+
+struct Tag {
+	String * tagname;
+};
+
+struct Metatag {
+	char * metatag;
+	union {
+		String * string;
+		Integer * integer;
+		Date * Date;
+		SemanticSize * size;
+	};
+	MetaType type;
+};
+
+struct String {
+	char * string;
+	MatchType match;
+};
+
+struct Integer {
+	union{
+		char * integer;
+		struct {
+			char * start;
+			char * end;
+		};
+	};
+	FieldType fieldtype;
+};
+
+struct Date {
+	union{
+		char * date;
+		struct {
+			char * start;
+			char * end;
+		};
+	};
+	FieldType fieldtype;
+};
+
+struct SemanticSize {
+	union{
+		char * size;
+		struct {
+			char * start;
+			char * end;
+		};
+	};
+	FieldType fieldtype;
+};
+
+/*LEGACY STRUCTS
 struct Constant {
 	int value;
 };
@@ -92,6 +224,8 @@ struct Expression {
 struct Program {
 	Expression * expression;
 };
+
+*/
 
 /**
  * Node recursive destructors.

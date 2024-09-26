@@ -22,7 +22,7 @@
 	Subquery * subquery;
 	Subqueryname * subqueryname;
 	Metaorder * metaorder;
-	Ordertype * ordertype;
+	Ordertypenode * ordertypenode;
 	Metatag * metatag;
 	String * stringNode;
 	Integer * integerNode;
@@ -55,7 +55,7 @@
 %token <string> ORDERMETA
 %token <string> INTEGER
 %token <string> DATE
-%token <string> SIZE
+%token <string> SEMANTICSIZE
 
 
 %token <token> CLOSE_PARENTHESIS
@@ -73,12 +73,12 @@
 %token <string> QUANTIFIER
 
 %token <token> DESC
-%token <token> CREATIONDATE
-%token <token> LIKES
-%token <token> VIEWS
-%token <token> LASTEDIT
+%token <token> ORDERCREATIONDATE
+%token <token> ORDERLIKES
+%token <token> ORDERVIEWS
+%token <token> ORDERLASTEDIT
 %token <token> ORDERSIZE
-%token <token> RANDOM
+%token <token> ORDERRANDOM
 
 %token <token> RECALL
 
@@ -94,7 +94,7 @@
 %type <subquery> subquery
 %type <subqueryname> subqueryname
 %type <subqueries> subqueries
-%type <ordertype> ordertype
+%type <ordertypenode> ordertype
 %type <stringNode> string
 %type <integerNode> integer
 %type <dateNode> date
@@ -129,12 +129,12 @@ metaorder: ORDERMETA ordertype										{ $$ = MetaorderSemanticAction($2, false
 	| ORDERMETA ordertype DESC										{ $$ = MetaorderSemanticAction($2, true); }
 	;
 
-ordertype: CREATIONDATE												{ $$ = OrdertypeSemanticAction($1); }
-	| LASTEDIT														{ $$ = OrdertypeSemanticAction($1); }
-	| LIKES															{ $$ = OrdertypeSemanticAction($1); }
+ordertype: ORDERCREATIONDATE										{ $$ = OrdertypeSemanticAction($1); }
+	| ORDERLASTEDIT													{ $$ = OrdertypeSemanticAction($1); }
+	| ORDERLIKES													{ $$ = OrdertypeSemanticAction($1); }
 	| ORDERSIZE														{ $$ = OrdertypeSemanticAction($1); }
-	| VIEWS															{ $$ = OrdertypeSemanticAction($1); }
-	| RANDOM														{ $$ = OrdertypeSemanticAction($1); }
+	| ORDERVIEWS													{ $$ = OrdertypeSemanticAction($1); }
+	| ORDERRANDOM													{ $$ = OrdertypeSemanticAction($1); }
 	;
 
 subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname SPLIT	{ $$ = SubquerySemanticAction($4, $2); }
@@ -178,9 +178,9 @@ date: DATE															{ $$ = DateSemanticAction($1); }
 	| QUANTIFIER DATE												{ $$ = UndefinedRangeDateSemanticAction($1, $2); }
 	;
 
-size: SIZE															{ $$ = SizeSemanticAction($1); }
-	| SIZE RANGE SIZE												{ $$ = RangedSizeSemanticAction($1, $3); }
-	| QUANTIFIER SIZE												{ $$ = UndefinedRangeSizeSemanticAction($1, $2); }
+size: SEMANTICSIZE													{ $$ = SizeSemanticAction($1); }
+	| SEMANTICSIZE RANGE SEMANTICSIZE								{ $$ = RangedSizeSemanticAction($1, $3); }
+	| QUANTIFIER SEMANTICSIZE										{ $$ = UndefinedRangeSizeSemanticAction($1, $2); }
 	;
 
 tag: string															{ $$ = TagSemanticAction($1); }
