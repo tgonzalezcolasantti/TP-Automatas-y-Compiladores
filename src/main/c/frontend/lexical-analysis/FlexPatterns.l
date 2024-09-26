@@ -26,7 +26,7 @@
  */
 STRING                  [[:alnum:]]([[:alnum:]]|"-"|"_"|"("|")")+
 INT                     [[:digit:]]+
-DATE                    ("0"[1-9]|"1"[0-2])"-"("0"[1-9]|[1-2][0-9]|"3"[0-1])"-"[0-9]{4}
+DATE                    [0-9]{4}"-"("0"[1-9]|"1"[0-2])"-"("0"[1-9]|[1-2][0-9]|"3"[0-1])
 DATETIME                {DATE}"T"([0-1][0-9]|"2"[0-3])":"([0-5][0-9])":"([0-5][0-9])"Z"
 SIZE                    [0-9]+("B"|"KiB"|"MiB"|"GiB")
 ORDER                   ("creationdate"|"likes"|"views"|"lastedited"|"size"|"random")"_desc"?
@@ -74,7 +74,7 @@ METATAG_RECALL          "recall:"
 
 {SPACER}+                                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-{SPACER}+/({STRING}|"(") 		            { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), AND); }
+{SPACER}+/({STRING}|"("|"!") 		        { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), AND); }
 {SPACER}+"|"{SPACER}+                       { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), OR); }
 "!"/({STRING}|"(")                          { return NOTOperatorLexemeAction(createLexicalAnalyzerContext()); }
 

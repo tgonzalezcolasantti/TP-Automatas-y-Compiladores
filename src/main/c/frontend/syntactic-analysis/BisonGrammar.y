@@ -68,7 +68,6 @@
 %token <token> NOT					//OK
 %token <token> AND					//OK
 
-%token <token> WILDCARD				//OK
 %token <token> RANGE				//OK
 %token <string> QUANTIFIER			//OK
 
