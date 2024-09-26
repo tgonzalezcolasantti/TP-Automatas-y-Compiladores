@@ -102,7 +102,7 @@ struct Query {
 
 struct Subqueries {
 	Subquery * subquery;
-	Subqueries * Subqueries;
+	Subqueries * subqueries;
 };
 
 struct Subquery {
@@ -110,7 +110,7 @@ struct Subquery {
 	Subqueryname * name;
 };
 
-struct Subquerymame {
+struct Subqueryname {
 	char * name;
 };
 
@@ -149,11 +149,11 @@ struct Tag {
 };
 
 struct Metatag {
-	char * metatag;
+	char * metatagname;
 	union {
 		String * string;
 		Integer * integer;
-		Date * Date;
+		Date * date;
 		SemanticSize * size;
 	};
 	MetaType type;
@@ -230,9 +230,20 @@ struct Program {
 /**
  * Node recursive destructors.
  */
-void releaseConstant(Constant * constant);
+
+void releaseQuery(Query * query);
+void releaseSubqueries(Subqueries * subqueries);
+void releaseSubquery(Subquery * subquery);
+void releaseSubqueryname(Subqueryname * subqueryname);
+void releaseMetaorder(Metaorder * metaorder);
+void releaseOrdertypenode(Ordertypenode * ordertypenode);
 void releaseExpression(Expression * expression);
 void releaseFactor(Factor * factor);
-void releaseProgram(Program * program);
+void releaseTag(Tag * tag);
+void releaseMetatag(Metatag * metatag);
+void releaseString(String * str);
+void releaseInteger(Integer * integer);
+void releaseDate(Date * date);
+void releaseSemanticSize(SemanticSize * size);
 
 #endif
