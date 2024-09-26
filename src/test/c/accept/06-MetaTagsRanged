@@ -1,3 +1,3 @@
-tag1 tag2 name:nombre createdby:pedro createdon:01-01-2000T00:00:00Z..01-01-2020T15:24:33Z
-editedby:pedro editedon:>=01-01-2000 lasteditedby:pedro lasteditedon:01-01-2000
-likedby:pedro likes:<100 type:video/mp4 size:20KB..2MiB views:200 pool:unNombreCool
+tag1 tag2 name:nombre createdby:pedro createdon:2000-01-01T00:00:00Z..2020-01-01T15:24:33Z
+editedby:pedro editedon:>=2000-01-01 lasteditedby:pedro lasteditedon:2020-01-01
+likedby:pedro likes:<100 type:video-mp4 size:20KiB..2MiB views:200 pool:unNombreCool
