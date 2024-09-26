@@ -74,7 +74,7 @@ Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	separators = 0;
 	lexicalAnalyzerContext->semanticValue->integer = 1;
-	return INTEGER;
+	return STRING;
 }
 
 Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token) {

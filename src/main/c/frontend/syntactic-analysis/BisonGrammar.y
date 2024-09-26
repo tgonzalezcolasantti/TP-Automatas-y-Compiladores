@@ -48,40 +48,39 @@
 */
 
 /** Terminals. */
-%token <string> STRING
-%token <string> STRMETA
-%token <string> INTMETA
-%token <string> DATEMETA
-%token <string> SIZEMETA
-%token <string> ORDERMETA
-%token <string> INTEGER
-%token <string> DATE
-%token <string> SEMANTICSIZE
+%token <string> STRING				//OK
+%token <string> STRMETA				//OK
+%token <string> INTMETA				//OK
+%token <string> DATEMETA			//OK
+%token <string> SIZEMETA			//OK
+%token <string> ORDERMETA			//OK
+%token <string> INTEGER				//OK
+%token <string> DATE				//OK
+%token <string> SEMANTICSIZE		//OK
 
 
-%token <token> CLOSE_PARENTHESIS
-%token <token> OPEN_PARENTHESIS
-%token <token> CLOSE_BRACES
-%token <token> OPEN_BRACES
-%token <token> SPLIT
+%token <token> CLOSE_PARENTHESIS	//OK
+%token <token> OPEN_PARENTHESIS		//OK
+%token <token> CLOSE_BRACES			//OK
+%token <token> OPEN_BRACES			//OK
 
-%token <token> OR
-%token <token> NOT
-%token <token> AND
+%token <token> OR					//OK
+%token <token> NOT					//OK
+%token <token> AND					//OK
 
-%token <token> WILDCARD
-%token <token> RANGE
-%token <string> QUANTIFIER
+%token <token> WILDCARD				//OK
+%token <token> RANGE				//OK
+%token <string> QUANTIFIER			//OK
 
-%token <token> DESC
-%token <token> ORDERCREATIONDATE
-%token <token> ORDERLIKES
-%token <token> ORDERVIEWS
-%token <token> ORDERLASTEDIT
-%token <token> ORDERSIZE
-%token <token> ORDERRANDOM
+%token <token> DESC					//ok
+%token <token> ORDERCREATIONDATE	//OK
+%token <token> ORDERLIKES			//OK
+%token <token> ORDERVIEWS			//OK
+%token <token> ORDERLASTEDIT		//OK
+%token <token> ORDERSIZE			//OK
+%token <token> ORDERRANDOM			//OK	
 
-%token <token> RECALL
+%token <token> RECALL				//OK
 
 %token <token> UNKNOWN
 
@@ -140,7 +139,7 @@ ordertype: ORDERCREATIONDATE										{ $$ = OrdertypeSemanticAction($1); }
 	| ORDERRANDOM													{ $$ = OrdertypeSemanticAction($1); }
 	;
 
-subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname SPLIT	{ $$ = SubquerySemanticAction($4, $2); }
+subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname      	{ $$ = SubquerySemanticAction($4, $2); }
 ;
 
 subqueryname: STRING												{ $$ = SubquerynameSemanticAction($1); }
@@ -187,7 +186,6 @@ size: SEMANTICSIZE													{ $$ = SizeSemanticAction($1); }
 	;
 
 tag: string															{ $$ = TagSemanticAction($1); }
-	|%empty															{ $$ = EmptySemanticAction(); }
 	;
 
 %%
