@@ -44,6 +44,7 @@ Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzer
 Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterOrderReverseLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

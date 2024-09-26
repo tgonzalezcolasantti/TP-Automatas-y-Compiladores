@@ -153,9 +153,26 @@ Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCo
 
 Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	if (strcmp(lexicalAnalyzerContext->lexeme, "likes")){
+		return ORDERLIKES;
+	} else if (strcmp(lexicalAnalyzerContext->lexeme, "creationdate")){
+		return ORDERCREATIONDATE;
+	} else if (strcmp(lexicalAnalyzerContext->lexeme, "random")){
+		return ORDERRANDOM;
+	} else if (strcmp(lexicalAnalyzerContext->lexeme, "lastedited")){
+		return ORDERLASTEDIT;
+	} else if (strcmp(lexicalAnalyzerContext->lexeme, "size")){
+		return ORDERSIZE;
+	} else if (strcmp(lexicalAnalyzerContext->lexeme, "views")){
+		return ORDERVIEWS;
+	} 
 	return ORDERRANDOM;
 }
 
+Token MetaparameterOrderReverseLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	return DESC;
+}
 
 Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);

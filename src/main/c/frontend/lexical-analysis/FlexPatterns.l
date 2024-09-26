@@ -29,7 +29,8 @@ INT                     [[:digit:]]+
 DATE                    [0-9]{4}"-"("0"[1-9]|"1"[0-2])"-"("0"[1-9]|[1-2][0-9]|"3"[0-1])
 DATETIME                {DATE}"T"([0-1][0-9]|"2"[0-3])":"([0-5][0-9])":"([0-5][0-9])"Z"
 SIZE                    [0-9]+("B"|"KiB"|"MiB"|"GiB")
-ORDER                   ("creationdate"|"likes"|"views"|"lastedited"|"size"|"random")"_desc"?
+ORDER                   ("creationdate"|"likes"|"views"|"lastedited"|"size"|"random")
+DESCENDORDER            "_desc"
 SPACER                  ([[:blank:]]|\n)
 WILDSTRING              {WILD}?{STRING}{WILD}?
 
@@ -60,6 +61,8 @@ METATAG_RECALL          "recall:"
 {METATAG_ORDER}/{ORDER}                     { BEGIN(METATAG_ARG); return MetatagOrderLexemeAction(createLexicalAnalyzerContext()); }
 {METATAG_RECALL}/{STRING}                   { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
+<METATAG_ARG>{ORDER}/{DESCENDORDER}         { return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{DESCENDORDER}                 { BEGIN(INITIAL); return MetaparameterOrderReverseLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{ORDER}                        { BEGIN(INITIAL); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{QUANT}                        { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{RANGE}                        { return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
