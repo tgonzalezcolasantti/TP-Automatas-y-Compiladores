@@ -182,6 +182,7 @@ size: SEMANTICSIZE													{ $$ = SizeSemanticAction($1); }
 	;
 
 tag: string															{ $$ = TagSemanticAction($1); }
-	;
+	| %empty														{ $$ = EmptySemanticAction(); }
+;
 
 %%

@@ -91,6 +91,7 @@ void releaseExpression(Expression * expression) {
 				break;
 			case OPNOT:
 				releaseExpression(expression->singleExpression);
+				break;
 			case FACTOR:
 				releaseFactor(expression->factor);
 				break;

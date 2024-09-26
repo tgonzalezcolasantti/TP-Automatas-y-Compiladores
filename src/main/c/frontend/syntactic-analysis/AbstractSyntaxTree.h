@@ -23,21 +23,21 @@ typedef enum QuantifierType QuantifierType;
 
 
 
-typedef struct Program Program;
-typedef struct Expression Expression;		//OK
-typedef struct Factor Factor;				//OK
-typedef struct Query Query;					//OK
-typedef struct Subqueries Subqueries;		//OK
-typedef struct Subquery Subquery;			//OK
-typedef struct Subqueryname Subqueryname;	//OK
-typedef struct Metaorder Metaorder;			//OK
-typedef struct Ordertypenode Ordertypenode;	//OK
-typedef struct Metatag Metatag;				//OK
-typedef struct String String;				//OK
+typedef struct Program Program;				//OKOK
+typedef struct Expression Expression;		//OKOK
+typedef struct Factor Factor;				//OKOK
+typedef struct Query Query;					//OKOK
+typedef struct Subqueries Subqueries;		//OKOK
+typedef struct Subquery Subquery;			//OKOK
+typedef struct Subqueryname Subqueryname;	//OKOK
+typedef struct Metaorder Metaorder;			//OKOK
+typedef struct Ordertypenode Ordertypenode;	//OKOK
+typedef struct Metatag Metatag;				//OKOK
+typedef struct String String;				//OKOK
 typedef struct Integer Integer;				//OK
 typedef struct Date Date;					//OK
 typedef struct SemanticSize SemanticSize;	//OK
-typedef struct Tag Tag;						//OK
+typedef struct Tag Tag;						//OKOK
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
