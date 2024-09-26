@@ -16,7 +16,6 @@ void shutdownAbstractSyntaxTreeModule();
 
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
-typedef enum MatchType MatchType;
 typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
 typedef enum MetaType MetaType;
@@ -79,12 +78,6 @@ enum MetaType {
 	TYPERECALL
 };
 
-enum MatchType {
-	SINGLE,
-	PREFIX,
-	SUFFIX,
-	INFIX
-};
 
 enum QuantifierType {
 	EQUALS,
@@ -165,7 +158,6 @@ struct Metatag {
 
 struct String {
 	char * string;
-	MatchType match;
 };
 
 struct Integer {

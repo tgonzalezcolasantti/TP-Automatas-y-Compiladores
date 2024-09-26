@@ -21,18 +21,30 @@ void shutdownFlexActionsModule();
  * Flex lexeme processing actions.
  */
 
-void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);  //OK
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);  //OK
 
-Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token); //OK
+Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);                 //OK
 
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);    //OK
+
+Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagRecallLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+
+Token MetaparameterQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterRangeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 

@@ -164,10 +164,7 @@ metatag: STRMETA string												{ $$ = StringMetatagSemanticAction($1, $2); }
 	| RECALL string													{ $$ = RecallMetatagSemanticAction($2); }
 	;
 
-string: STRING														{ $$ = StringSemanticAction($1, SINGLE); }
-	| WILDCARD STRING												{ $$ = StringSemanticAction($2, SUFFIX); }
-	| STRING WILDCARD												{ $$ = StringSemanticAction($1, PREFIX); }
-	| WILDCARD STRING WILDCARD										{ $$ = StringSemanticAction($2, INFIX); }
+string: STRING														{ $$ = StringSemanticAction($1); }
 	;
 
 integer: INTEGER													{ $$ = IntegerSemanticAction($1); }

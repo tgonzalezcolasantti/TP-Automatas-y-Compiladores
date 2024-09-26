@@ -259,11 +259,10 @@ Metatag * RecallMetatagSemanticAction(String * recallable) {
 }
 
 
-String * StringSemanticAction(char * string, MatchType match) {
+String * StringSemanticAction(char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	String * str = calloc(1, sizeof(String));
 	str->string = string;
-	str->match = match;
 	return str;
 }
 

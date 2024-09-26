@@ -14,7 +14,8 @@
  *
  * @see https://westes.github.io/flex/manual/Start-Conditions.html
  */
-%x MULTILINE_COMMENT
+%s SUBQUERY
+%x SUBQUERYEND
 %x METATAG_ARG
 
 /**
@@ -43,39 +44,33 @@ METATAG_ORDER           "order:"
 METATAG_RECALL          "recall:"
 %%
 
-"/*"								        { BEGIN(MULTILINE_COMMENT); BeginMultilineCommentLexemeAction(createLexicalAnalyzerContext()); }
-<MULTILINE_COMMENT>"*/"				        { EndMultilineCommentLexemeAction(createLexicalAnalyzerContext()); BEGIN(INITIAL); }
-<MULTILINE_COMMENT>[[:space:]]+		        { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
-<MULTILINE_COMMENT>[^*]+			        { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
-<MULTILINE_COMMENT>.				        { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 "("									        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 ")"									        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
-"{"                                         { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
-"}"{SPACER}+                                { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
+"{"                                         { BEGIN(SUBQUERY); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
+<SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
+<SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext()); }
+<SUBQUERYEND>{SPACER}+                      { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-{METATAG_STRING}/({WILD}?{STRING})          {}
-{METATAG_INTEGER}/({QUANT}?{INT})           {}
-{METATAG_DATE}/({QUANT}?{DATE})             {}
-{METATAG_SIZE}/({QUANT}?{SIZE})             {}
-{METATAG_ORDER}/{ORDER}                     {}
-{METATAG_RECALL}/{STRING}                   {}
+{METATAG_STRING}/({WILD}?{STRING})          { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_INTEGER}/({QUANT}?{INT})           { BEGIN(METATAG_ARG); return MetatagIntegerLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_DATE}/({QUANT}?{DATE})             { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_SIZE}/({QUANT}?{SIZE})             { BEGIN(METATAG_ARG); return MetatagSizeLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_ORDER}/{ORDER}                     { BEGIN(METATAG_ARG); return MetatagOrderLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_RECALL}/{STRING}                   { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
-<METATAG_ARG>{QUANT}                        {}
-<METATAG_ARG>{RANGE}                        {}
-<METATAG_ARG>{INT}                          {}
-<METATAG_ARG>({DATE}|{DATETIME})            {}
-<METATAG_ARG>{SIZE}                         {}
-<METATAG_ARG>{STRING}                       {}
-<METATAG_ARG>{STRING}{WILD}                 {}
-<METATAG_ARG>{WILD}{STRING}                 {}
-<METATAG_ARG>{WILD}{STRING}{WILD}           {}
-<METATAG_ARG>{ORDER}                        {}
+<METATAG_ARG>{QUANT}                        { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{RANGE}                        { return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{INT}/{RANGE}                  { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{INT}                          { BEGIN(INITIAL); return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>({DATE}|{DATETIME})/{RANGE}    { return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>({DATE}|{DATETIME})            { BEGIN(INITIAL); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{SIZE}/{RANGE}                 { return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{SIZE}                         { BEGIN(INITIAL); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{WILD}?{STRING}{WILD}?         { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{ORDER}                        { BEGIN(INITIAL); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
 
-{STRING}                                    { return StringLexemeAction(createLexicalAnalyzerContext()); }
-{WILD}{STRING}                              {}
-{STRING}{WILD}                              {}
-{WILD}{STRING}{WILD}                        {}
+{WILD}?{STRING}{WILD}?                      { return StringLexemeAction(createLexicalAnalyzerContext()); }
 
 {SPACER}+                                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
