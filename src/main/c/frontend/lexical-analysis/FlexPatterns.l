@@ -1,7 +1,7 @@
 %{
 
 #include "FlexActions.h"
-
+boolean isSubquery = false;
 %}
 
 /**
@@ -49,8 +49,8 @@ METATAG_RECALL          "recall:"
 
 "("{SPACER}*    					        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 {SPACER}*")"						        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
-"{"                                         { BEGIN(SUBQUERY); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
-<SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
+<INITIAL>"{"                                { BEGIN(SUBQUERY); isSubquery = true; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
+<SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); isSubquery = false; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
 <SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 <SUBQUERYEND>{SPACER}+                      { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
@@ -62,18 +62,18 @@ METATAG_RECALL          "recall:"
 {METATAG_RECALL}/{STRING}                   { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
 <METATAG_ARG>{ORDER}/{DESCENDORDER}         { return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{DESCENDORDER}                 { BEGIN(INITIAL); return MetaparameterOrderReverseLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{ORDER}                        { BEGIN(INITIAL); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{DESCENDORDER}                 { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterOrderReverseLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{ORDER}                        { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{QUANT}                        { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{RANGE}                        { return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}/{RANGE}                  { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{INT}                          { BEGIN(INITIAL); return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{INT}                          { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>({DATE}|{DATETIME})/{RANGE}    { return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>({DATE}|{DATETIME})            { BEGIN(INITIAL); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>({DATE}|{DATETIME})            { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{SIZE}/{RANGE}                 { return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{SIZE}                         { BEGIN(INITIAL); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{STRING}                       { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), false); }
-<METATAG_ARG>{WILDSTRING}                   { BEGIN(INITIAL); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), true); }
+<METATAG_ARG>{SIZE}                         { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{STRING}                       { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), false); }
+<METATAG_ARG>{WILDSTRING}                   { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), true); }
 
 {STRING}                                    { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 {WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext(), true); }
