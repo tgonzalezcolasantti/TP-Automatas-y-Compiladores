@@ -362,8 +362,8 @@ Tag * TagSemanticAction(String * string) {
 	return tag;
 }
 
-Tag * EmptySemanticAction() {
+Query * EmptySemanticAction() {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Tag * tag = calloc(1, sizeof(Tag));
-	return tag;
+	Query * q = calloc(1, sizeof(Query));
+	return q;
 }

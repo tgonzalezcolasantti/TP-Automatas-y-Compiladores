@@ -73,6 +73,6 @@ SemanticSize * RangedSizeSemanticAction(char * start, char * end);
 SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size);
 
 Tag * TagSemanticAction(String * string);
-Tag * EmptySemanticAction();
+Query * EmptySemanticAction();
 
 #endif

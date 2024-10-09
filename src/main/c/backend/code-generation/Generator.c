@@ -167,7 +167,9 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 	if (q->subqueries){
 		_generateSubqueries(indentationLevel + 1, q->subqueries);
 	}
-	_generateExpression(indentationLevel + 1, q->mainQuery);
+	if (q->mainQuery){
+		_generateExpression(indentationLevel + 1, q->mainQuery);
+	}
 	if (q->order){
 		_generateMetaorder(indentationLevel + 1, q->order);
 	}

@@ -123,6 +123,8 @@ query: expression													{ $$ = ExpressionQuerySemanticAction($1); }
 	| expression metaorder											{ $$ = ExpressionWithOrderProgramSemanticAction($1, $2); }
 	| subqueries expression											{ $$ = ExpressionSubquerySemanticAction($1, $2); }
 	| subqueries expression metaorder								{ $$ = ExpressionSubqueryOrderedSemanticAction($1, $2, $3); }
+    | %empty														{ $$ = EmptySemanticAction(); }
+
 	;
 
 subqueries: subquery												{ $$ = SubquerySingleSemanticAction($1); }
@@ -185,7 +187,6 @@ size: SEMANTICSIZE													{ $$ = SizeSemanticAction($1); }
 	;
 
 tag: string															{ $$ = TagSemanticAction($1); }
-	| %empty														{ $$ = EmptySemanticAction(); }
 ;
 
 %%

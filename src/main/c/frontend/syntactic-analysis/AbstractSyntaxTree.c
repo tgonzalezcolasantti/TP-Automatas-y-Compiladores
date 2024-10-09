@@ -26,7 +26,9 @@ void releaseProgram(Program * program) {
 void releaseQuery(Query * query) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (query != NULL) {
-		releaseExpression(query->mainQuery);
+		if (query->mainQuery){
+			releaseExpression(query->mainQuery);
+		}
 		if (query->order){
 			releaseMetaorder(query->order);
 		}		
