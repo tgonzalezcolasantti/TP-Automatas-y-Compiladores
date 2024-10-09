@@ -194,14 +194,14 @@ static void _generateSubquery(const unsigned int indentationLevel, Subquery * s)
 
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n) {
 	_output(indentationLevel, "%s", "[ $N$, circle, draw, magenta\n");
-	_generateConstant(indentationLevel, n->name);
+	_generateConstant(indentationLevel + 1, n->name);
 	_output(indentationLevel, "%s", "]\n");
 }
 
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m) {
 	_output(indentationLevel, "%s", "[ $O$, circle, draw, magenta\n");
 	_generateOrderType(indentationLevel + 1, m->order);
-	_generateConstant(indentationLevel, (m->desc) ? "DESC" : "ASC");
+	_generateConstant(indentationLevel + 1, (m->desc) ? "DESC" : "ASC");
 	_output(indentationLevel, "%s", "]\n");
 }
 
