@@ -60,7 +60,7 @@ static const char _expressionTypeToCharacter(const ExpressionType type) {
  * Generates the output of a constant.
  */
 static void _generateConstant(const unsigned int indentationLevel, char * constant) {
-	_output(1 + indentationLevel, "%s%s%s", "[ $", constant, "$, draw, black]\n");
+	_output(indentationLevel, "%s%s%s", "[ \\text{$", constant, "$}, draw, black]\n");
 }
 
 /**
@@ -137,16 +137,16 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	switch(m->type) {
 		case TYPESTRING:
 		case TYPERECALL:
-			_generateString(indentationLevel, m->string);
+			_generateString(indentationLevel + 1, m->string);
 			break;
 		case TYPEINTEGER:
-			_generateInteger(indentationLevel, m->integer);
+			_generateInteger(indentationLevel + 1, m->integer);
 			break;		
 		case TYPEDATE:
-			_generateDate(indentationLevel, m->date);
+			_generateDate(indentationLevel + 1, m->date);
 			break;		
 		case TYPESIZE:
-			_generateSize(indentationLevel, m->size);
+			_generateSize(indentationLevel + 1, m->size);
 			break;			
 	}
 	_output(indentationLevel, "%s", "]\n");

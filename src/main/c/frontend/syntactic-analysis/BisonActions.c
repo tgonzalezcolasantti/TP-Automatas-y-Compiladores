@@ -139,6 +139,7 @@ Metaorder * MetaorderSemanticAction(Ordertypenode * order, boolean descending) {
 Ordertypenode * OrdertypeSemanticAction(Token order) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Ordertypenode * ordertype = calloc(1, sizeof(Ordertypenode));
+	printf("%d\n", order);
 	switch(order){
 		case ORDERCREATIONDATE:
 			ordertype->order = CREATIONDATE;

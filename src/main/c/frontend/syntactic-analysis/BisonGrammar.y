@@ -134,12 +134,12 @@ metaorder: ORDERMETA ordertype										{ $$ = MetaorderSemanticAction($2, false
 	| ORDERMETA ordertype DESC										{ $$ = MetaorderSemanticAction($2, true); }
 	;
 
-ordertype: ORDERCREATIONDATE										{ $$ = OrdertypeSemanticAction($1); }
-	| ORDERLASTEDIT													{ $$ = OrdertypeSemanticAction($1); }
-	| ORDERLIKES													{ $$ = OrdertypeSemanticAction($1); }
-	| ORDERSIZE														{ $$ = OrdertypeSemanticAction($1); }
-	| ORDERVIEWS													{ $$ = OrdertypeSemanticAction($1); }
-	| ORDERRANDOM													{ $$ = OrdertypeSemanticAction($1); }
+ordertype: ORDERCREATIONDATE										{ $$ = OrdertypeSemanticAction(ORDERCREATIONDATE); }
+	| ORDERLASTEDIT													{ $$ = OrdertypeSemanticAction(ORDERLASTEDIT); }
+	| ORDERLIKES													{ $$ = OrdertypeSemanticAction(ORDERLIKES); }
+	| ORDERSIZE														{ $$ = OrdertypeSemanticAction(ORDERSIZE); }
+	| ORDERVIEWS													{ $$ = OrdertypeSemanticAction(ORDERVIEWS); }
+	| ORDERRANDOM													{ $$ = OrdertypeSemanticAction(ORDERRANDOM); }
 	;
 
 subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname      	{ $$ = SubquerySemanticAction($4, $2); }
