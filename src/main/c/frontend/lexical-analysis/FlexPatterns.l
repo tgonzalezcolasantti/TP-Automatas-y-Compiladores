@@ -49,8 +49,8 @@ METATAG_RECALL          "recall:"
 
 "("{SPACER}*    					        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
 {SPACER}*")"						        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
-<INITIAL>"{"                                { BEGIN(SUBQUERY); isSubquery = true; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
-<SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); isSubquery = false; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
+<INITIAL>"{"{SPACER}*                       { BEGIN(SUBQUERY); isSubquery = true; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
+<SUBQUERY>{SPACER}*"}"                      { BEGIN(SUBQUERYEND); isSubquery = false; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
 <SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 <SUBQUERYEND>{SPACER}+                      { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
