@@ -42,6 +42,7 @@ const int main(const int count, const char ** arguments) {
 		logDebugging(logger, "Computing expression value...");
 		Program * program = compilerState.abstractSyntaxtTree;
 		//ComputationResult computationResult = computeExpression(program->expression);
+		//if (computationResult.succeed) {
 		if (true) {
 			//compilerState.value = computationResult.value;
 			generate(&compilerState);

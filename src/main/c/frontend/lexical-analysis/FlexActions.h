@@ -21,14 +21,14 @@ void shutdownFlexActionsModule();
  * Flex lexeme processing actions.
  */
 
-void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);  //OK
+void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
-Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);  //OK
+Token StringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);
 
-Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token); //OK
-Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);                 //OK
+Token BinaryOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
+Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);    //OK
+Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
 
 Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetatagIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

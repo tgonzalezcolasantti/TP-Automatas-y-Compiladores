@@ -11,7 +11,7 @@ void initializeAbstractSyntaxTreeModule();
 void shutdownAbstractSyntaxTreeModule();
 
 /**
- * This typedefs allows self-referencing types.
+ * These typedefs allows self-referencing types.
  */
 
 typedef enum ExpressionType ExpressionType;
@@ -24,21 +24,21 @@ typedef enum MatchType MatchType;
 
 
 
-typedef struct Program Program;				//OKOK
-typedef struct Expression Expression;		//OKOK
-typedef struct Factor Factor;				//OKOK
-typedef struct Query Query;					//OKOK
-typedef struct Subqueries Subqueries;		//OKOK
-typedef struct Subquery Subquery;			//OKOK
-typedef struct Subqueryname Subqueryname;	//OKOK
-typedef struct Metaorder Metaorder;			//OKOK
-typedef struct Ordertypenode Ordertypenode;	//OKOK
-typedef struct Metatag Metatag;				//OKOK
-typedef struct String String;				//OKOK
-typedef struct Integer Integer;				//OK
-typedef struct Date Date;					//OK
-typedef struct SemanticSize SemanticSize;	//OK
-typedef struct Tag Tag;						//OKOK
+typedef struct Program Program;
+typedef struct Expression Expression;
+typedef struct Factor Factor;
+typedef struct Query Query;
+typedef struct Subqueries Subqueries;
+typedef struct Subquery Subquery;
+typedef struct Subqueryname Subqueryname;
+typedef struct Metaorder Metaorder;
+typedef struct Ordertypenode Ordertypenode;
+typedef struct Metatag Metatag;
+typedef struct String String;
+typedef struct Integer Integer;
+typedef struct Date Date;
+typedef struct SemanticSize SemanticSize;
+typedef struct Tag Tag;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -205,36 +205,6 @@ struct SemanticSize {
 	};
 	FieldType fieldtype;
 };
-
-/*LEGACY STRUCTS
-struct Constant {
-	int value;
-};
-
-struct Factor {
-	union {
-		Constant * constant;
-		Expression * expression;
-	};
-	FactorType type;
-};
-
-struct Expression {
-	union {
-		Factor * factor;
-		struct {
-			Expression * leftExpression;
-			Expression * rightExpression;
-		};
-	};
-	ExpressionType type;
-};
-
-struct Program {
-	Expression * expression;
-};
-
-*/
 
 /**
  * Node recursive destructors.

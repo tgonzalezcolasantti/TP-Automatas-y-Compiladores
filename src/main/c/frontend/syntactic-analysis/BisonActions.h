@@ -18,15 +18,6 @@ void shutdownBisonActionsModule();
  * Bison semantic actions.
  */
 
-/*  LEGACY ACTIONS
-
-Constant * IntegerConstantSemanticAction(const int value);
-Expression * ArithmeticExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
-Expression * FactorExpressionSemanticAction(Factor * factor);
-Factor * ConstantFactorSemanticAction(Constant * constant);
-Factor * ExpressionFactorSemanticAction(Expression * expression);
-
-*/
 Program * ProgramSemanticAction(CompilerState * compilerState, Query * query);
 
 Query * ExpressionQuerySemanticAction(Expression * expression);

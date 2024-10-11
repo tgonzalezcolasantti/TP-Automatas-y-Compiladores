@@ -124,6 +124,9 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a tag element.
+ */
 static void _generateTag(const unsigned int indentationLevel, Tag * t) {
 	_output(indentationLevel, "%s", "[ $T$, circle, draw, cyan\n");
 	if (t->tagname)
@@ -131,6 +134,9 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a metatag element.
+ */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	_output(indentationLevel, "%s", "[ $M$, circle, draw, brown\n");
 	_generateConstant(indentationLevel + 1, m->metatagname);
@@ -152,7 +158,6 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
-
 /**
  * Generates the output of the program.
  */
@@ -162,6 +167,9 @@ static void _generateProgram(Program * program) {
 	_output(2, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a query object.
+ */
 static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 	_output(indentationLevel, "%s", "[ $Q$, circle, draw, red\n");
 	if (q->subqueries){
@@ -176,6 +184,9 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a subquery group.
+ */
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s) {
 	_output(indentationLevel, "%s", "[ $S$, circle, draw, orange\n");
 	_generateSubquery(indentationLevel + 1, s->subquery);
@@ -185,6 +196,9 @@ static void _generateSubqueries(const unsigned int indentationLevel, Subqueries 
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a subquery.
+ */
 static void _generateSubquery(const unsigned int indentationLevel, Subquery * s) {
 	_output(indentationLevel, "%s", "[ $sub$, circle, draw, magenta\n");
 	_generateExpression(indentationLevel + 1, s->expression);
@@ -192,12 +206,18 @@ static void _generateSubquery(const unsigned int indentationLevel, Subquery * s)
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a subquery name.
+ */
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n) {
 	_output(indentationLevel, "%s", "[ $N$, circle, draw, magenta\n");
 	_generateConstant(indentationLevel + 1, n->name);
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a metaorder tag.
+ */
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m) {
 	_output(indentationLevel, "%s", "[ $O$, circle, draw, magenta\n");
 	_generateOrderType(indentationLevel + 1, m->order);
@@ -205,6 +225,9 @@ static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * 
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a metaorder type.
+ */
 static void _generateOrderType(const unsigned int indentationLevel, Ordertypenode * o) {
 	switch(o->order) {
 		case CREATIONDATE:
@@ -228,6 +251,9 @@ static void _generateOrderType(const unsigned int indentationLevel, Ordertypenod
 	}
 }
 
+/**
+ * Generates the output of an integer attribute.
+ */
 static void _generateInteger(const unsigned int indentationLevel, Integer * i) {
 	_output(indentationLevel, "%s", "[ $I$, circle, draw, black!20\n");
 	if (i->fieldtype == RANGED) {
@@ -240,6 +266,9 @@ static void _generateInteger(const unsigned int indentationLevel, Integer * i) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a date attribute.
+ */
 static void _generateDate(const unsigned int indentationLevel, Date * d) {
 	_output(indentationLevel, "%s", "[ $D$, circle, draw, black!20\n");
 	if (d->fieldtype == RANGED) {
@@ -252,6 +281,9 @@ static void _generateDate(const unsigned int indentationLevel, Date * d) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a size attribute.
+ */
 static void _generateSize(const unsigned int indentationLevel, SemanticSize * s) {
 	_output(indentationLevel, "%s", "[ $S$, circle, draw, black!20\n");
 	if (s->fieldtype == RANGED) {
@@ -264,6 +296,9 @@ static void _generateSize(const unsigned int indentationLevel, SemanticSize * s)
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a string attribute.
+ */
 static void _generateString(const unsigned int indentationLevel, String * s) {
 	_output(indentationLevel, "%s", "[ $STR$, circle, draw, teal\n");
 	if (s->match == LIKE){
@@ -275,6 +310,9 @@ static void _generateString(const unsigned int indentationLevel, String * s) {
 	_output(indentationLevel, "%s", "]\n");
 }
 
+/**
+ * Generates the output of a quantifier.
+ */
 static void _generateQuantifier(const unsigned int indentationLevel, QuantifierType q) {
 	switch(q) {
 		case EQUALS:
@@ -294,7 +332,6 @@ static void _generateQuantifier(const unsigned int indentationLevel, QuantifierT
 			break;
 	}
 }
-
 
 
 /**

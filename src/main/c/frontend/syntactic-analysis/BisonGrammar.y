@@ -116,7 +116,6 @@
 %%
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
-//query: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 program: query														{ $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 
 query: expression													{ $$ = ExpressionQuerySemanticAction($1); }
@@ -148,7 +147,6 @@ subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname      	{ $$ = Subquery
 subqueryname: STRING												{ $$ = SubquerynameSemanticAction($1); }
 	;
 
-//expression: expression[left] OR expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 expression: expression[left] OR expression[right]					{ $$ = BinaryExpressionSemanticAction($left, $right, OPOR); }
 	| expression[left] AND expression[right]						{ $$ = BinaryExpressionSemanticAction($left, $right, OPAND); }
 	| NOT expression[right]											{ $$ = NegatedExpressionSemanticAction($right); }
