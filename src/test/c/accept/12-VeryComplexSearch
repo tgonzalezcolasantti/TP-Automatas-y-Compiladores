@@ -1,0 +1,11 @@
+{tag1 tag2 | tag3 !tag4 ( tag1 | tag2 )}s1 
+{ ( tag4 ajshdf   hjsd1 | !( pindajkas | sdfas )) recall:s1 }s2 
+( tag1 tag2 | tag3 tag4 ) recall:s2 recall:s1 
+createdon:2000-01-01 lasteditedon:2020-12-31T23:59:50Z
+createdon:2000-01-01..2024-12-31
+lasteditedon:2020-12-31T00:00:00Z..2030-05-23T12:53:14Z
+editedon:>=2020-01-01 lasteditedon:>2020-01-01 createdon:<=2020-01-01 lasteditedon:<2020-01-01T00:00:00Z
+likes:200 views:>5000 likes:200..29909 views:<=20344
+size:20KiB size:20KiB..153MiB size:<=4GiB
+createdby:pedro editedby:*pepe*
+order:creationdate 
