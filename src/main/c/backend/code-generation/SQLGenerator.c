@@ -348,7 +348,7 @@ static void _generatePrologue(void) {
 	_output(0, "%s", "SELECT filename, appuser.username as creator, createdon as created_on,\n"
 	"    type, size, views, (\n"
 	"        SELECT COUNT(*) as likes FROM favorite\n"
-	"        WHERE favorite.fileID=fileID\n"
+	"        WHERE favorite.fileID=file.fileID\n"
 	"    ) as likes, editiondate as last_edited_on, lastEdition.username as last_edited_by\n"
 	"FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
 	"    LEFT OUTER JOIN (\n"
