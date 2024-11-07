@@ -61,7 +61,13 @@ static const char * _expressionTypeToCharacter(const ExpressionType type) {
  * Generates the output of a constant.
  */
 static void _generateConstant(const unsigned int indentationLevel, char * constant) {
-	_output(0, "%s", constant);
+	int i = 0;
+	while (constant[i]){
+		if (constant[i] == '*')
+			constant[i] = '%';\
+		i++;
+	}
+	_output(0, "LOWER('%s')", constant);
 }
 
 /**
@@ -303,12 +309,11 @@ static void _generateSize(const unsigned int indentationLevel, SemanticSize * s)
  */
 static void _generateString(const unsigned int indentationLevel, String * s) {
 	if (s->match == LIKE){
-		_output(0, "%s", " LIKE '");
+		_output(0, "%s", " LIKE ");
 	} else {
-		_output(0, "%s", "='");
+		_output(0, "%s", "=");
 	}
 	_generateConstant(indentationLevel + 1, s->string);
-	_output(0, "%s", "'");
 }
 
 /**
