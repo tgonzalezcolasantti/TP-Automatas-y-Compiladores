@@ -4,7 +4,7 @@
 
 const static char _indentationCharacter = ' ';
 const static char _indentationSize = 4;
-static idcounter = 0;
+static int idcounter = 0;
 static Logger * _logger = NULL;
 
 void initializeSQLGeneratorModule() {
@@ -43,8 +43,8 @@ static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
 
 /**
- * Converts and expression type to the proper character of the operation
- * involved, or returns '\0' if that's not possible.
+ * Converts and expression type to its proper SQL operator
+ * or returns "F" if that's not possible.
  */
 static const char * _expressionTypeToCharacter(const ExpressionType type) {
 	switch (type) {
@@ -53,7 +53,7 @@ static const char * _expressionTypeToCharacter(const ExpressionType type) {
 		case OPNOT: return "NOT";
 		default:
 			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
-			return 'F';
+			return "F";
 	}
 }
 
@@ -65,8 +65,8 @@ static void _generateConstant(const unsigned int indentationLevel, char * consta
 }
 
 /**
- * Creates the epilogue of the generated output, that is, the final lines that
- * completes a valid Latex document.
+ * Creates the epilogue of the generated output, that is, the final semicolon that
+ * completes a proper SQL statement.
  */
 static void _generateEpilogue(void) {
 	_output(0, "%s",";\n");
@@ -336,10 +336,8 @@ static void _generateQuantifier(const unsigned int indentationLevel, QuantifierT
 
 
 /**
- * Creates the prologue of the generated output, a Latex document that renders
- * a tree thanks to the Forest package.
- *
- * @see https://ctan.dcc.uchile.cl/graphics/pgf/contrib/forest/forest-doc.pdf
+ * Creates the prologue of the generated query, an irrestricted SELECT statement.
+ * It will later have restrictions applied based on the given query
  */
 static void _generatePrologue(void) {
 	_output(0, "%s","SELECT * FROM file\n");
