@@ -19,7 +19,7 @@ void shutdownSQLGeneratorModule() {
 
 /** PRIVATE FUNCTIONS */
 
-static const char * _expressionTypeToCharacter(const ExpressionType type);
+static const char * _expressionTypeToOperator(const ExpressionType type);
 static void _generateConstant(char * constant);														//OK (?)
 static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
@@ -46,13 +46,13 @@ static void _output(const unsigned int indentationLevel, const char * const form
  * Converts and expression type to its proper SQL operator
  * or returns "F" if that's not possible.
  */
-static const char * _expressionTypeToCharacter(const ExpressionType type) {
+static const char * _expressionTypeToOperator(const ExpressionType type) {
 	switch (type) {
 		case OPAND: return "AND";
 		case OPOR: return "OR";
 		case OPNOT: return "NOT";
 		default:
-			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
+			logError(_logger, "The specified expression type cannot be converted into an operator: %d", type);
 			return "F";
 	}
 }
@@ -67,7 +67,7 @@ static void _generateConstant(char * constant) {
 			constant[i] = '%';\
 		i++;
 	}
-	_output(0, "LOWER('%s')", constant);
+	_output(0, "'%s'", constant);
 }
 
 /**
@@ -97,7 +97,7 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 			_output(indentationLevel + 1, "WHERE ");
 			_generateExpression(1 + indentationLevel, expression->leftExpression);
 			_output(0, "\n");
-			_output(indentationLevel + 1, "%s ", _expressionTypeToCharacter(expression->type));
+			_output(indentationLevel + 1, "%s ", _expressionTypeToOperator(expression->type));
 			_generateExpression(1 + indentationLevel, expression->rightExpression);
 			_output(0, "\n");
 			_output(indentationLevel, ")");
@@ -125,6 +125,8 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
 		case METATAG:
 			_output(0, "EXISTS(\n");
 			_generateMetatag(indentationLevel + 1, factor->metatag);
+			_output(0, "\n");
+			_output(indentationLevel, ")");
 			break;
 		case EXPRESSION:
 			_generateExpression(indentationLevel, factor->expression);
@@ -150,8 +152,16 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
  * Generates the output of a metatag element.
  */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
-	_output(0, "%s", "[ $M$, circle, draw, brown\n");
-	_generateConstant(m->metatagname);
+	if (!strcmp(m->metatagname, "name")){
+		_output(indentationLevel, "%s%d\n", "SELECT * FROM file as file", idcounter);
+		_output(indentationLevel, "%s%d%s%d%s", "WHERE file", idcounter, ".fileID=file.fileID AND file", idcounter, ".filename");
+	} else if (!strcmp(m->metatagname, "createdby")){
+		_output(indentationLevel, "%s%d%s%d%s\n", "SELECT * FROM file as file", idcounter, " INNER JOIN appuser ON appuser.userID=file", idcounter, ".createdby");
+		_output(indentationLevel, "%s%d%s", "WHERE file", idcounter, ".fileID=file.fileID AND username");
+	} else {
+		logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
+	}	
+	idcounter++;
 	switch(m->type) {
 		case TYPESTRING:
 		case TYPERECALL:
@@ -167,7 +177,6 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_generateSize(m->size);
 			break;			
 	}
-	_output(0, "%s", "]\n");
 }
 
 /**
@@ -308,11 +317,7 @@ static void _generateSize(SemanticSize * s) {
  * Generates the output of a string attribute.
  */
 static void _generateString(String * s) {
-	if (s->match == LIKE){
-		_output(0, "%s", " LIKE ");
-	} else {
-		_output(0, "%s", "=");
-	}
+	_output(0, "%s", " ILIKE ");
 	_generateConstant(s->string);
 }
 
