@@ -85,16 +85,14 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 	if (expression->type == OPNOT) {
 		_output(0, "NOT ");
 	} else {
-		_output(0, "EXISTS(\n");
 	}
 	switch (expression->type) {
 		case FACTOR:
-			_generateFactor(indentationLevel + 1, expression->factor);
-			_output(0, "%s", "\n");
-			_output(indentationLevel, "%s", ")");
+			_generateFactor(indentationLevel, expression->factor);
 			break;
 		case OPAND:
 		case OPOR:
+			_output(0, "EXISTS(\n");
 			_output(indentationLevel + 1, "%s%d%s", "SELECT * FROM file AS file", idcounter++, "\n");
 			_output(indentationLevel + 1, "WHERE ");
 			_generateExpression(1 + indentationLevel, expression->leftExpression);
@@ -119,15 +117,17 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
 	switch (factor->type) {
 		case TAG:
-			_generateTag(indentationLevel, factor->tag);
+			_output(0, "EXISTS(\n");
+			_generateTag(indentationLevel + 1, factor->tag);
+			_output(0, "\n");
+			_output(indentationLevel, ")");
 			break;
 		case METATAG:
-			_generateMetatag(1 + indentationLevel, factor->metatag);
+			_output(0, "EXISTS(\n");
+			_generateMetatag(indentationLevel + 1, factor->metatag);
 			break;
 		case EXPRESSION:
-			_output(1 + indentationLevel, "%s", "[ $($, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, factor->expression);
-			_output(1 + indentationLevel, "%s", "[ $)$, circle, draw, purple ]\n");
+			_generateExpression(indentationLevel, factor->expression);
 			break;
 		default:
 			logError(_logger, "The specified factor type is unknown: %d", factor->type);
@@ -350,12 +350,12 @@ static void _generatePrologue(void) {
 	"        SELECT COUNT(*) as likes FROM favorite\n"
 	"        WHERE favorite.fileID=fileID\n"
 	"    ) as likes, editiondate as last_edited_on, lastEdition.username as last_edited_by\n"
-	"    FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
-	"        LEFT OUTER JOIN (\n"
-	"            SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n"
-	"            ORDER BY fileID, editiondate DESC\n"
-	"        ) as lastEdition\n"	
-	"        ON lastEdition.fileID=file.fileID\n");
+	"FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
+	"    LEFT OUTER JOIN (\n"
+	"        SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n"
+	"        ORDER BY fileID, editiondate DESC\n"
+	"    ) as lastEdition\n"	
+	"    ON lastEdition.fileID=file.fileID\n");
 }
 
 /**
