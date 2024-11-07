@@ -1,16 +1,16 @@
-#include "Generator.h"
+#include "ASTGenerator.h"
 
 /* MODULE INTERNAL STATE */
 
-const char _indentationCharacter = ' ';
-const char _indentationSize = 4;
+const static char _indentationCharacter = ' ';
+const static char _indentationSize = 4;
 static Logger * _logger = NULL;
 
-void initializeGeneratorModule() {
-	_logger = createLogger("Generator");
+void initializeASTGeneratorModule() {
+	_logger = createLogger("AST Generator");
 }
 
-void shutdownGeneratorModule() {
+void shutdownASTGeneratorModule() {
 	if (_logger != NULL) {
 		destroyLogger(_logger);
 	}
@@ -380,7 +380,7 @@ static void _output(const unsigned int indentationLevel, const char * const form
 
 /** PUBLIC FUNCTIONS */
 
-void generate(CompilerState * compilerState) {
+void generateAST(CompilerState * compilerState) {
 	logDebugging(_logger, "Generating final output...");
 	_generatePrologue();
 	_generateProgram(compilerState->abstractSyntaxtTree);

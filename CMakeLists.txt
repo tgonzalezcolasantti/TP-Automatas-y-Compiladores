@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.22)
 
 # Name of the project and language to use (C, in this case).
 project(Compiler C)
+include(CTest)
 
 # Compiles the parser with Bison, generating counter-examples in case S/R or R/R conflicts exists.
 add_custom_command(
@@ -55,7 +56,8 @@ endif ()
 # Defines the entry-point of the application, and the source-codes (*.c extension).
 # The header files (*.h extension), are automatically included from the source-codes.
 add_executable(Compiler
-	src/main/c/backend/code-generation/Generator.c
+	src/main/c/backend/code-generation/ASTGenerator.c
+	src/main/c/backend/code-generation/SQLGenerator.c
 	#src/main/c/backend/domain-specific/Calculator.c
 	src/main/c/EntryPoint.c
 	src/main/c/frontend/lexical-analysis/FlexActions.c
@@ -74,3 +76,6 @@ add_executable(Compiler
 
 # Link final project and libraries.
 target_link_libraries(Compiler)
+
+# Test automatically using CTest
+add_test(NAME AllTests COMMAND ../script/ubuntu/test.sh)

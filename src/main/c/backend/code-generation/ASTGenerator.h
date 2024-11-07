@@ -1,5 +1,5 @@
-#ifndef GENERATOR_HEADER
-#define GENERATOR_HEADER
+#ifndef ASTGENERATOR_HEADER
+#define ASTGENERATOR_HEADER
 
 #include "../../frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "../../shared/CompilerState.h"
@@ -9,14 +9,14 @@
 #include <stdio.h>
 
 /** Initialize module's internal state. */
-void initializeGeneratorModule();
+void initializeASTGeneratorModule();
 
 /** Shutdown module's internal state. */
-void shutdownGeneratorModule();
+void shutdownASTGeneratorModule();
 
 /**
  * Generates the final output using the current compiler state.
  */
-void generate(CompilerState * compilerState);
+void generateAST(CompilerState * compilerState);
 
 #endif
