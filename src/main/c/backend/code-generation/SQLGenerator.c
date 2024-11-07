@@ -32,7 +32,7 @@ static void _generateSubqueries(const unsigned int indentationLevel, Subqueries 
 static void _generateSubquery(const unsigned int indentationLevel, Subquery * s);
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n);
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m);
-static void _generateOrderType(const unsigned int indentationLevel, Ordertypenode * o);
+static void _generateOrderType(Ordertypenode * o);
 static void _generateInteger(const unsigned int indentationLevel, Integer * i);
 static void _generateDate(const unsigned int indentationLevel, Date * d);
 static void _generateSize(const unsigned int indentationLevel, SemanticSize * s);
@@ -189,7 +189,7 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 		_generateExpression(indentationLevel, q->mainQuery);
 	}
 	if (q->order){
-		//_generateMetaorder(indentationLevel + 1, q->order);
+		_generateMetaorder(indentationLevel, q->order);
 	}
 }
 
@@ -228,34 +228,33 @@ static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryn
  * Generates the output of a metaorder tag.
  */
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m) {
-	_output(indentationLevel, "%s", "[ $O$, circle, draw, magenta\n");
-	_generateOrderType(indentationLevel + 1, m->order);
-	_generateConstant(indentationLevel + 1, (m->desc) ? "DESC" : "ASC");
-	_output(indentationLevel, "%s", "]\n");
+	_output(indentationLevel, "%s", "\nORDER BY ");
+	_generateOrderType(m->order);
+	_output(0, "%s\n", (m->desc) ? "DESC" : "");
 }
 
 /**
  * Generates the output of a metaorder type.
  */
-static void _generateOrderType(const unsigned int indentationLevel, Ordertypenode * o) {
+static void _generateOrderType(Ordertypenode * o) {
 	switch(o->order) {
 		case CREATIONDATE:
-			_generateConstant(indentationLevel, "CREATIONDATE");
+			_output(0, "created_on ");
 			break;
 		case LASTEDIT:
-			_generateConstant(indentationLevel, "LASTEDIT");
+			_output(0, "last_edited_on ");
 			break;
 		case LIKES:
-			_generateConstant(indentationLevel, "LIKES");
+			_output(0, "likes ");
 			break;
 		case SIZE:
-			_generateConstant(indentationLevel, "SIZE");
+			_output(0, "size ");
 			break;
 		case VIEWS:
-			_generateConstant(indentationLevel, "VIEWS");
+			_output(0, "views ");
 			break;
 		case RANDOM:
-			_generateConstant(indentationLevel, "RANDOM");
+			_output(0, "RANDOM () ");
 			break;
 	}
 }
@@ -346,7 +345,17 @@ static void _generateQuantifier(const unsigned int indentationLevel, QuantifierT
  * It will later have restrictions applied based on the given query
  */
 static void _generatePrologue(void) {
-	_output(0, "%s","SELECT * FROM file\n");
+	_output(0, "%s", "SELECT filename, appuser.username as creator, createdon as created_on,\n"
+	"    type, size, views, (\n"
+	"        SELECT COUNT(*) as likes FROM favorite\n"
+	"        WHERE favorite.fileID=fileID\n"
+	"    ) as likes, editiondate as last_edited_on, lastEdition.username as last_edited_by\n"
+	"    FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
+	"        LEFT OUTER JOIN (\n"
+	"            SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n"
+	"            ORDER BY fileID, editiondate DESC\n"
+	"        ) as lastEdition\n"	
+	"        ON lastEdition.fileID=file.fileID\n");
 }
 
 /**

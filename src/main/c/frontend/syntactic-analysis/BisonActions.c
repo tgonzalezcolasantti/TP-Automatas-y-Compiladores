@@ -76,6 +76,14 @@ Query * ExpressionWithOrderProgramSemanticAction(Expression * expression, Metaor
 	return query;
 }
 
+Query * OrderProgramSemanticAction(Metaorder * order) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Query * query = calloc(1, sizeof(Query));
+	query->order = order;
+	return query;
+}
+
+
 Query * ExpressionSubquerySemanticAction(Subqueries * subqueries, Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Query * query = calloc(1, sizeof(Query));

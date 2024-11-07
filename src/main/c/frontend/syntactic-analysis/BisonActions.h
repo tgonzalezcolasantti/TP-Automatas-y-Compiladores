@@ -22,6 +22,7 @@ Program * ProgramSemanticAction(CompilerState * compilerState, Query * query);
 
 Query * ExpressionQuerySemanticAction(Expression * expression);
 Query * ExpressionWithOrderProgramSemanticAction(Expression * expression, Metaorder * order);
+Query * OrderProgramSemanticAction(Metaorder * order);
 Query * ExpressionSubquerySemanticAction(Subqueries * subqueries, Expression * expression);
 Query * ExpressionSubqueryOrderedSemanticAction(Subqueries * subqueries, Expression * expression, Metaorder * order);
 
