@@ -103,7 +103,7 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 			_output(indentationLevel, ")");
 			break;
 		case OPNOT:
-			_generateExpression(1 + indentationLevel, expression->singleExpression);
+			_generateExpression(indentationLevel, expression->singleExpression);
 			break;
 		default:
 			logError(_logger, "The specified expression type is unknown: %d", expression->type);
@@ -153,13 +153,32 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
  */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	if (!strcmp(m->metatagname, "name")){
-		_output(indentationLevel, "%s%d\n", "SELECT * FROM file as file", idcounter);
-		_output(indentationLevel, "%s%d%s%d%s", "WHERE file", idcounter, ".fileID=file.fileID AND file", idcounter, ".filename");
+		_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
+		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.filename", idcounter, idcounter);
 	} else if (!strcmp(m->metatagname, "createdby")){
-		_output(indentationLevel, "%s%d%s%d%s\n", "SELECT * FROM file as file", idcounter, " INNER JOIN appuser ON appuser.userID=file", idcounter, ".createdby");
-		_output(indentationLevel, "%s%d%s", "WHERE file", idcounter, ".fileID=file.fileID AND username");
+		_output(indentationLevel, "SELECT * FROM file AS file%d INNER JOIN appuser AS appuser%d ON appuser%d.userID=file%d.createdby\n", idcounter, idcounter, idcounter, idcounter);
+		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND username", idcounter);
+	} else if (!strcmp(m->metatagname, "editedby")){
+		_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+		_output(indentationLevel + 1, "INNER JOIN edition AS edition%d ON edition%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
+		_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON edition%d.userID=appuser%d.userID \n", idcounter, idcounter, idcounter);
+		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
+	} else if (!strcmp(m->metatagname, "lasteditedby")){
+		_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+		_output(indentationLevel + 1, "INNER JOIN (\n");
+		_output(indentationLevel + 2, "SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n");
+		_output(indentationLevel + 2, "ORDER BY fileID, editiondate DESC\n");
+		_output(indentationLevel + 1, ") as lastEdition%d\n", idcounter);
+		_output(indentationLevel + 1, "ON lastEdition%d.fileID=file%d.fileID\n", idcounter, idcounter);		
+		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND lastEdition%d.username", idcounter, idcounter);
+	} else if (!strcmp(m->metatagname, "likedby")){
+		_output(indentationLevel, "SELECT * FROM file as file%d\n");
+		_output(indentationLevel + 1, "INNER JOIN favorite AS favorite%d ON favorite%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter, idcounter);
+		_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON favorite%d.userID=appuser%d.userID\n", idcounter, idcounter, idcounter);	
+		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
 	} else {
 		logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
+		_output(indentationLevel, "SELECT * FROM file");
 	}	
 	idcounter++;
 	switch(m->type) {
