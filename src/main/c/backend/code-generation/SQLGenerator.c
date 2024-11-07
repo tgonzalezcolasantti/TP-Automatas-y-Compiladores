@@ -84,8 +84,9 @@ static void _generateEpilogue(void) {
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
 	if (expression->type == OPNOT) {
 		_output(0, "NOT ");
+	} else {
+		_output(0, "EXISTS(\n");
 	}
-	_output(0, "EXISTS(\n");
 	switch (expression->type) {
 		case FACTOR:
 			_generateFactor(indentationLevel + 1, expression->factor);
