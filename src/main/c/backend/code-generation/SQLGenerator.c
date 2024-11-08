@@ -25,7 +25,7 @@ static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
 static void _generateTag(const unsigned int indentationLevel, Tag * t);								//OK
-static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);
+static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						
 static void _generateProgram(Program * program);													//OK
 static void _generateQuery(const unsigned int indentationLevel, Query * q);							
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s);				
@@ -33,10 +33,10 @@ static void _generateSubquery(const unsigned int indentationLevel, Subquery * s)
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n);			
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m);					//OK
 static void _generateOrderType(Ordertypenode * o);													//OK
-static void _generateInteger(Integer * i);
+static void _generateInteger(Integer * i);															//OK
 static void _generateDate(Date * d);
-static void _generateSize(SemanticSize * s);
-static void _generateQuantifier(QuantifierType q);
+static void _generateSize(SemanticSize * s);														//OK
+static void _generateQuantifier(QuantifierType q);													//OK
 static void _generateString(String * s);															//OK
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
@@ -176,34 +176,34 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND username", idcounter);
 			break;
 		case EDITED_BY:
-			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel, "SELECT * FROM file As file%d\n", idcounter);
 			_output(indentationLevel + 1, "INNER JOIN edition AS edition%d ON edition%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
 			_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON edition%d.userID=appuser%d.userID \n", idcounter, idcounter, idcounter);
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
 			break;
 		case LASTEDITED_BY:
-			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
 			_output(indentationLevel + 1, "INNER JOIN (\n");
 			_output(indentationLevel + 2, "SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n");
 			_output(indentationLevel + 2, "ORDER BY fileID, editiondate DESC\n");
-			_output(indentationLevel + 1, ") as lastEdition%d\n", idcounter);
+			_output(indentationLevel + 1, ") AS lastEdition%d\n", idcounter);
 			_output(indentationLevel + 1, "ON lastEdition%d.fileID=file%d.fileID\n", idcounter, idcounter);		
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND lastEdition%d.username", idcounter, idcounter);
 			break;
 		case LIKED_BY:
-			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
 			_output(indentationLevel + 1, "INNER JOIN favorite AS favorite%d ON favorite%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter, idcounter);
 			_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON favorite%d.userID=appuser%d.userID\n", idcounter, idcounter, idcounter);	
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
 			break;
 		case FILE_TYPE:
-			_output(indentationLevel, "SELECT * FROM file as file%d\n");
+			_output(indentationLevel, "SELECT * FROM file AS file%d\n");
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.type", idcounter, idcounter);
 			break;
 		case LIKES_AMOUNT:
 			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND (\n", idcounter);
-			_output(indentationLevel + 1, "SELECT COUNT(*) AS likes FROM favorite as fav%d\n", idcounter);
+			_output(indentationLevel + 1, "SELECT COUNT(*) AS likes FROM favorite AS fav%d\n", idcounter);
 			_output(indentationLevel + 1, "WHERE fav%d.fileID=file%d.fileID\n", idcounter, idcounter);
 			_output(indentationLevel, ")");
 			break;
@@ -216,9 +216,17 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.size", idcounter, idcounter);
 			break;
 		case CREATED_ON:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.createdon", idcounter, idcounter);
+			break;
 		case EDITED_ON:
 		case LASTEDITED_ON:
 		case POOL:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "INNER JOIN poolfile AS poolfile%d ON poolfile%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
+			_output(indentationLevel, "INNER JOIN pool AS pool%d ON pool%d.poolID=poolfile%d.poolID\n", idcounter, idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND pool%d.poolname", idcounter, idcounter);
+			break;
 		case METARECALL:
 		default:
 			logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
@@ -350,15 +358,12 @@ static void _generateInteger(Integer * i) {
  * Generates the output of a date attribute.
  */
 static void _generateDate(Date * d) {
-	_output(0, "%s", "[ $D$, circle, draw, black!20\n");
 	if (d->fieldtype == RANGED) {
-		_generateConstant(d->start);
-		_generateConstant(d->end);
+		_output(0, " BETWEEN TIMESTAMP '%s' AND TIMESTAMP '%s'", d->start, d->end);
 	} else {
-		_generateConstant(d->date);
-		_generateQuantifier(d->quantifier);
+		 _generateQuantifier(d->quantifier);
+		_output(0, " TIMESTAMP '%s'", d->date);
 	}
-	_output(0, "%s", "]\n");
 }
 
 /**
@@ -410,16 +415,16 @@ static void _generateQuantifier(QuantifierType q) {
  * It will later have restrictions applied based on the given query
  */
 static void _generatePrologue(void) {
-	_output(0, "%s", "SELECT filename, appuser.username as creator, createdon as created_on,\n"
+	_output(0, "%s", "SELECT file.fileID, filename, appuser.username AS creator, createdon AS created_on,\n"
 	"    type, size, views, (\n"
-	"        SELECT COUNT(*) as likes FROM favorite\n"
+	"        SELECT COUNT(*) AS likes FROM favorite\n"
 	"        WHERE favorite.fileID=file.fileID\n"
-	"    ) as likes, editiondate as last_edited_on, lastEdition.username as last_edited_by\n"
+	"    ) AS likes, editiondate AS last_edited_on, lastEdition.username AS last_edited_by\n"
 	"FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
 	"    LEFT OUTER JOIN (\n"
 	"        SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n"
 	"        ORDER BY fileID, editiondate DESC\n"
-	"    ) as lastEdition\n"	
+	"    ) AS lastEdition\n"	
 	"    ON lastEdition.fileID=file.fileID\n");
 }
 
