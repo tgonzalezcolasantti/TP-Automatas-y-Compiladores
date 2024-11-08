@@ -225,6 +225,14 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND edition%d.editiondate", idcounter, idcounter);
 			break;
 		case LASTEDITED_ON:
+			_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
+			_output(indentationLevel + 1, "INNER JOIN (\n");
+			_output(indentationLevel + 2, "SELECT DISTINCT ON (fileID) fileID, editiondate FROM edition\n");
+			_output(indentationLevel + 2, "ORDER BY fileID, editiondate DESC\n");
+			_output(indentationLevel + 1, ") AS lastEdition%d\n", idcounter);
+			_output(indentationLevel + 1, "ON lastEdition%d.fileID=file%d.fileID\n", idcounter, idcounter);		
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND lastEdition%d.editiondate", idcounter, idcounter);
+			break;
 		case POOL:
 			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
 			_output(indentationLevel, "INNER JOIN poolfile AS poolfile%d ON poolfile%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
