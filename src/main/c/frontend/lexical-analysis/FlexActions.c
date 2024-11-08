@@ -127,11 +127,14 @@ Token MetaparameterIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerC
 	return INTEGER;
 }
 
-Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean includeTime) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
 	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
+	if (includeTime){
+		return DATETIME;
+	}
 	return DATE;
 }
 

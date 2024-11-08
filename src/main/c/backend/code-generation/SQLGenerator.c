@@ -220,6 +220,10 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.createdon", idcounter, idcounter);
 			break;
 		case EDITED_ON:
+			_output(indentationLevel, "SELECT * FROM file As file%d\n", idcounter);
+			_output(indentationLevel, "INNER JOIN edition AS edition%d ON edition%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND edition%d.editiondate", idcounter, idcounter);
+			break;
 		case LASTEDITED_ON:
 		case POOL:
 			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
@@ -359,10 +363,21 @@ static void _generateInteger(Integer * i) {
  */
 static void _generateDate(Date * d) {
 	if (d->fieldtype == RANGED) {
-		_output(0, " BETWEEN TIMESTAMP '%s' AND TIMESTAMP '%s'", d->start, d->end);
+		if (d->hasTime){
+			_output(0, " BETWEEN TIMESTAMP '%s' AND TIMESTAMP '%s'", d->start, d->end);
+		} else {
+			_output(0, "::DATE BETWEEN DATE '%s' AND DATE '%s'", d->start, d->end);
+		}
 	} else {
-		 _generateQuantifier(d->quantifier);
-		_output(0, " TIMESTAMP '%s'", d->date);
+		 if (d->hasTime){
+			_output(0, " ");
+			_generateQuantifier(d->quantifier);
+			_output(0, " DATE '%s'", d->date);
+		 } else {
+			_output(0, "::DATE ");
+			_generateQuantifier(d->quantifier);
+			_output(0, " TIMESTAMP '%s'", d->date);
+		 }
 	}
 }
 

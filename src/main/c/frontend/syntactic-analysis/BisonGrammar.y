@@ -58,6 +58,7 @@
 %token <string> ORDERMETA			//OK
 %token <string> INTEGER				//OK
 %token <string> DATE				//OK
+%token <string> DATETIME			//OK
 %token <string> SIZEQUANT			//OK
 %token <string> RECALL				//OK
 
@@ -175,9 +176,12 @@ integer: INTEGER													{ $$ = IntegerSemanticAction($1); }
 	| QUANTIFIER INTEGER											{ $$ = UndefinedRangeIntegerSemanticAction($1, $2); }
 	;
 
-date: DATE															{ $$ = DateSemanticAction($1); }
-	| DATE RANGE DATE												{ $$ = RangedDateSemanticAction($1, $3); }
-	| QUANTIFIER DATE												{ $$ = UndefinedRangeDateSemanticAction($1, $2); }
+date: DATE															{ $$ = DateSemanticAction($1, false); }
+	| DATE RANGE DATE												{ $$ = RangedDateSemanticAction($1, $3, false); }
+	| QUANTIFIER DATE												{ $$ = UndefinedRangeDateSemanticAction($1, $2, false); }
+	| DATETIME														{ $$ = DateSemanticAction($1, true); }
+	| DATETIME RANGE DATETIME										{ $$ = RangedDateSemanticAction($1, $3, true); }
+	| QUANTIFIER DATETIME											{ $$ = UndefinedRangeDateSemanticAction($1, $2, true); }
 	;
 
 size: INTEGER SIZEQUANT												{ $$ = SizeSemanticAction($1, $2); }

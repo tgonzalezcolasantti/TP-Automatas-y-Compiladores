@@ -313,29 +313,32 @@ Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, char * integer)
 	return field;
 }
 
-Date * DateSemanticAction(char * date) {
+Date * DateSemanticAction(char * date, boolean hasTime) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Date * field = calloc(1, sizeof(Date));
 	field->date = date;
+	field->hasTime = hasTime;
 	field->quantifier = EQUALS;
 	field->fieldtype = UNDEFINEDRANGED;
 	return field;
 }
 
-Date * RangedDateSemanticAction(char * start, char * end) {
+Date * RangedDateSemanticAction(char * start, char * end, boolean hasTime) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Date * field = calloc(1, sizeof(Date));
 	field->start = start;
 	field->end = end;
+	field->hasTime = hasTime;
 	field->fieldtype = RANGED;
 	return field;
 }
 
-Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date) {
+Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean hasTime) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Date * field = calloc(1, sizeof(Date));
 	field->date = date;
 	field->quantifier = convertToQuantifier(quantifier);
+	field->hasTime = hasTime;
 	field->fieldtype = UNDEFINEDRANGED;
 	free(quantifier);
 	return field;

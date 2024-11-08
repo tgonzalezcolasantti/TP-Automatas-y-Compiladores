@@ -40,7 +40,7 @@ Token MetatagRecallLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext)
 Token MetaparameterQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterRangeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean includeDate);
 Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);
 Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);

@@ -56,9 +56,9 @@ Integer * IntegerSemanticAction(char * integer);
 Integer * RangedIntegerSemanticAction(char * start, char * end);
 Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, char * integer);
 
-Date * DateSemanticAction(char * date);
-Date * RangedDateSemanticAction(char * start, char * end);
-Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date);
+Date * DateSemanticAction(char * date, boolean hasTime);
+Date * RangedDateSemanticAction(char * start, char * end, boolean hasTime);
+Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean hasTime);
 
 SemanticSize * SizeSemanticAction(char * size, char * sizequant);
 SemanticSize * RangedSizeSemanticAction(char * start, char * startquant, char * end, char * endquant);

@@ -68,8 +68,11 @@ METATAG_RECALL          "recall:"
 <METATAG_ARG>{RANGE}                        { return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}/{RANGE}                  { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}                          { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>({DATE}|{DATETIME})/{RANGE}    { return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>({DATE}|{DATETIME})            { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>{DATETIME}/{RANGE}             { return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), true); }
+<METATAG_ARG>{DATE}/{RANGE}                 { return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), false); }
+<METATAG_ARG>{DATETIME}                     { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), true); }
+<METATAG_ARG>{DATE}                         { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), false); }
+
 <METATAG_ARG>{SIZEQUANT}/{RANGE}            { return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{SIZEQUANT}                    { (isSubquery) ? (BEGIN(SUBQUERY)) : (BEGIN(INITIAL)); return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}/{SIZEQUANT}              { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }

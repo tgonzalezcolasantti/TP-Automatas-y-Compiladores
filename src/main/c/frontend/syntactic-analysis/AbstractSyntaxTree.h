@@ -210,9 +210,11 @@ struct Integer {
 struct Date {
 	union{
 		struct {
+			boolean hasTime;
 			char * date;
 			QuantifierType quantifier;
 		};		struct {
+			boolean time;
 			char * start;
 			char * end;
 		};
