@@ -41,6 +41,7 @@ static void _generateString(String * s);															//OK
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
+static int _sizetobytes(int size, SizeType type);
 
 /**
  * Converts and expression type to its proper SQL operator
@@ -54,6 +55,19 @@ static const char * _expressionTypeToOperator(const ExpressionType type) {
 		default:
 			logError(_logger, "The specified expression type cannot be converted into an operator: %d", type);
 			return "F";
+	}
+}
+
+static int _sizetobytes(int size, SizeType type){
+	switch (type) {
+		case GIB: 
+			size = size << 10;
+		case MIB: 
+			size = size << 10;
+		case KIB: 
+			size = size << 10;
+		default:
+			return size;
 	}
 }
 
@@ -152,33 +166,63 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
  * Generates the output of a metatag element.
  */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
-	if (!strcmp(m->metatagname, "name")){
-		_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
-		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.filename", idcounter, idcounter);
-	} else if (!strcmp(m->metatagname, "createdby")){
-		_output(indentationLevel, "SELECT * FROM file AS file%d INNER JOIN appuser AS appuser%d ON appuser%d.userID=file%d.createdby\n", idcounter, idcounter, idcounter, idcounter);
-		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND username", idcounter);
-	} else if (!strcmp(m->metatagname, "editedby")){
-		_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
-		_output(indentationLevel + 1, "INNER JOIN edition AS edition%d ON edition%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
-		_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON edition%d.userID=appuser%d.userID \n", idcounter, idcounter, idcounter);
-		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
-	} else if (!strcmp(m->metatagname, "lasteditedby")){
-		_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
-		_output(indentationLevel + 1, "INNER JOIN (\n");
-		_output(indentationLevel + 2, "SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n");
-		_output(indentationLevel + 2, "ORDER BY fileID, editiondate DESC\n");
-		_output(indentationLevel + 1, ") as lastEdition%d\n", idcounter);
-		_output(indentationLevel + 1, "ON lastEdition%d.fileID=file%d.fileID\n", idcounter, idcounter);		
-		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND lastEdition%d.username", idcounter, idcounter);
-	} else if (!strcmp(m->metatagname, "likedby")){
-		_output(indentationLevel, "SELECT * FROM file as file%d\n");
-		_output(indentationLevel + 1, "INNER JOIN favorite AS favorite%d ON favorite%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter, idcounter);
-		_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON favorite%d.userID=appuser%d.userID\n", idcounter, idcounter, idcounter);	
-		_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
-	} else {
-		logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
-		_output(indentationLevel, "SELECT * FROM file");
+	switch (m->metatag){
+		case NAME:
+			_output(indentationLevel, "SELECT * FROM file AS file%d\n", idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.filename", idcounter, idcounter);
+			break;
+		case CREATED_BY:
+			_output(indentationLevel, "SELECT * FROM file AS file%d INNER JOIN appuser AS appuser%d ON appuser%d.userID=file%d.createdby\n", idcounter, idcounter, idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND username", idcounter);
+			break;
+		case EDITED_BY:
+			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel + 1, "INNER JOIN edition AS edition%d ON edition%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter);
+			_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON edition%d.userID=appuser%d.userID \n", idcounter, idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
+			break;
+		case LASTEDITED_BY:
+			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel + 1, "INNER JOIN (\n");
+			_output(indentationLevel + 2, "SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n");
+			_output(indentationLevel + 2, "ORDER BY fileID, editiondate DESC\n");
+			_output(indentationLevel + 1, ") as lastEdition%d\n", idcounter);
+			_output(indentationLevel + 1, "ON lastEdition%d.fileID=file%d.fileID\n", idcounter, idcounter);		
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND lastEdition%d.username", idcounter, idcounter);
+			break;
+		case LIKED_BY:
+			_output(indentationLevel, "SELECT * FROM file as file%d\n", idcounter);
+			_output(indentationLevel + 1, "INNER JOIN favorite AS favorite%d ON favorite%d.fileID=file%d.fileID\n", idcounter, idcounter, idcounter, idcounter);
+			_output(indentationLevel + 1, "INNER JOIN appuser AS appuser%d ON favorite%d.userID=appuser%d.userID\n", idcounter, idcounter, idcounter);	
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND appuser%d.username", idcounter, idcounter);
+			break;
+		case FILE_TYPE:
+			_output(indentationLevel, "SELECT * FROM file as file%d\n");
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.type", idcounter, idcounter);
+			break;
+		case LIKES_AMOUNT:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND (\n", idcounter);
+			_output(indentationLevel + 1, "SELECT COUNT(*) AS likes FROM favorite as fav%d\n", idcounter);
+			_output(indentationLevel + 1, "WHERE fav%d.fileID=file%d.fileID\n", idcounter, idcounter);
+			_output(indentationLevel, ")");
+			break;
+		case VIEWS_AMOUNT:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.views", idcounter, idcounter);
+			break;
+		case FILE_SIZE:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND file%d.size", idcounter, idcounter);
+			break;
+		case CREATED_ON:
+		case EDITED_ON:
+		case LASTEDITED_ON:
+		case POOL:
+		case METARECALL:
+		default:
+			logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
+			_output(indentationLevel, "SELECT * FROM file\n");
 	}	
 	idcounter++;
 	switch(m->type) {
@@ -291,15 +335,15 @@ static void _generateOrderType(Ordertypenode * o) {
  * Generates the output of an integer attribute.
  */
 static void _generateInteger(Integer * i) {
-	_output(0, "%s", "[ $I$, circle, draw, black!20\n");
 	if (i->fieldtype == RANGED) {
+		_output(0, " BETWEEN ");
 		_generateConstant(i->start);
+		_output(0, " AND ");
 		_generateConstant(i->end);
 	} else {
-		_generateConstant(i->integer);
 		_generateQuantifier(i->quantifier);
+		_generateConstant(i->integer);
 	}
-	_output(0, "%s", "]\n");
 }
 
 /**
@@ -321,15 +365,12 @@ static void _generateDate(Date * d) {
  * Generates the output of a size attribute.
  */
 static void _generateSize(SemanticSize * s) {
-	_output(0, "%s", "[ $S$, circle, draw, black!20\n");
 	if (s->fieldtype == RANGED) {
-		_generateConstant(s->start);
-		_generateConstant(s->end);
+		_output(0, " BETWEEN '%d' AND '%d'", _sizetobytes(s->start, s->quantifierstart), _sizetobytes(s->end, s->quantifierend));
 	} else {
-		_generateConstant(s->size);
 		_generateQuantifier(s->quantifier);
+		_output(0, "%d", _sizetobytes(s->size, s->sizequantifier));
 	}
-	_output(0, "%s", "]\n");
 }
 
 /**

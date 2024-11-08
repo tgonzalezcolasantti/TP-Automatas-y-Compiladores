@@ -19,6 +19,7 @@ void shutdownASTGeneratorModule() {
 /** PRIVATE FUNCTIONS */
 
 static const char _expressionTypeToCharacter(const ExpressionType type);
+static const char * _sizeTypeToSize(SizeType s);
 static void _generateConstant(const unsigned int indentationLevel, char * constant);
 static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
@@ -54,6 +55,24 @@ static const char _expressionTypeToCharacter(const ExpressionType type) {
 			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
 			return '\0';
 	}
+}
+
+static const char * _sizeTypeToSize(SizeType s){
+	switch (s){
+		case BYTE:
+			return "Bytes";
+			break;
+		case KIB:
+			return "KiB";
+			break;
+		case MIB:
+			return "MiB";
+			break;
+		case GIB:
+			return "GiB";
+			break;
+	}
+
 }
 
 /**
@@ -285,15 +304,21 @@ static void _generateDate(const unsigned int indentationLevel, Date * d) {
  * Generates the output of a size attribute.
  */
 static void _generateSize(const unsigned int indentationLevel, SemanticSize * s) {
-	_output(indentationLevel, "%s", "[ $S$, circle, draw, black!20\n");
 	if (s->fieldtype == RANGED) {
-		_generateConstant(indentationLevel + 1, s->start);
-		_generateConstant(indentationLevel + 1, s->end);
+		_output(indentationLevel + 1, "%s", "[ $start$, circle, draw, black!20\n");
+		_output(indentationLevel + 2, "%s%d%s", "[ \\text{$", s->start, "$}, draw, black]\n");
+		_output(indentationLevel + 2, "%s%s%s", "[ \\text{$", _sizeTypeToSize(s->quantifierstart), "$}, draw, black]\n");
+		_output(indentationLevel, "%s", "]\n");
+		_output(indentationLevel + 1, "%s", "[ $end$, circle, draw, black!20\n");
+		_output(indentationLevel + 2, "%s%d%s", "[ \\text{$", s->end, "$}, draw, black]\n");
+		_output(indentationLevel + 2, "%s%s%s", "[ \\text{$", _sizeTypeToSize(s->quantifierend), "$}, draw, black]\n");
+		_output(indentationLevel, "%s", "]\n");
 	} else {
-		_generateConstant(indentationLevel + 1, s->size);
 		_generateQuantifier(indentationLevel + 1, s->quantifier);
+		_output(indentationLevel + 1, "%s%d%s", "[ \\text{$", s->size, "$}, draw, black]\n");
+		_output(indentationLevel + 1, "%s%s%s", "[ \\text{$", _sizeTypeToSize(s->sizequantifier), "$}, draw, black]\n");
+		_output(indentationLevel, "%s", "]\n");
 	}
-	_output(indentationLevel, "%s", "]\n");
 }
 
 /**

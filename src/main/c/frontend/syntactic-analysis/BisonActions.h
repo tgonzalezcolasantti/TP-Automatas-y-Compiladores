@@ -60,9 +60,9 @@ Date * DateSemanticAction(char * date);
 Date * RangedDateSemanticAction(char * start, char * end);
 Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date);
 
-SemanticSize * SizeSemanticAction(char * size);
-SemanticSize * RangedSizeSemanticAction(char * start, char * end);
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size);
+SemanticSize * SizeSemanticAction(char * size, char * sizequant);
+SemanticSize * RangedSizeSemanticAction(char * start, char * startquant, char * end, char * endquant);
+SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size, char * sizequant);
 
 Tag * TagSemanticAction(String * string);
 Query * EmptySemanticAction();

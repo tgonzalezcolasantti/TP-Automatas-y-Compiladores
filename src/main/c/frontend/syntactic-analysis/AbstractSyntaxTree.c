@@ -194,16 +194,5 @@ void releaseDate(Date * date) {
 
 void releaseSemanticSize(SemanticSize * size) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (size != NULL) {
-		switch (size->fieldtype) {
-			case UNDEFINEDRANGED:
-				free(size->size);
-				break;			
-			case RANGED:
-				free(size->start);
-				free(size->end);
-				break;
-		}
-		free(size);
-	}
+	free(size);
 }

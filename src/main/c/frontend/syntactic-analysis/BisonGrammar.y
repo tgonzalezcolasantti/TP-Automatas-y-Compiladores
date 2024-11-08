@@ -58,7 +58,7 @@
 %token <string> ORDERMETA			//OK
 %token <string> INTEGER				//OK
 %token <string> DATE				//OK
-%token <string> SEMANTICSIZE		//OK
+%token <string> SIZEQUANT			//OK
 %token <string> RECALL				//OK
 
 
@@ -180,9 +180,9 @@ date: DATE															{ $$ = DateSemanticAction($1); }
 	| QUANTIFIER DATE												{ $$ = UndefinedRangeDateSemanticAction($1, $2); }
 	;
 
-size: SEMANTICSIZE													{ $$ = SizeSemanticAction($1); }
-	| SEMANTICSIZE RANGE SEMANTICSIZE								{ $$ = RangedSizeSemanticAction($1, $3); }
-	| QUANTIFIER SEMANTICSIZE										{ $$ = UndefinedRangeSizeSemanticAction($1, $2); }
+size: INTEGER SIZEQUANT												{ $$ = SizeSemanticAction($1, $2); }
+	| INTEGER[il] SIZEQUANT[sl] RANGE INTEGER[ir] SIZEQUANT[sr]		{ $$ = RangedSizeSemanticAction($il, $sl, $ir, $sr); }
+	| QUANTIFIER INTEGER SIZEQUANT									{ $$ = UndefinedRangeSizeSemanticAction($1, $2, $3); }
 	;
 
 tag: string															{ $$ = TagSemanticAction($1); }

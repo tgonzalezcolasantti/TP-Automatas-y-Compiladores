@@ -22,6 +22,9 @@ extern unsigned int flexCurrentContext(void);
 /* PRIVATE FUNCTIONS */
 
 static void _logSyntacticAnalyzerAction(const char * functionName);
+MetatagType _getMetatagType(char * t);
+SizeType _getSizeQuantifier(char * q);
+
 
 /**
  * Logs a syntactic-analyzer action in DEBUGGING level.
@@ -31,13 +34,13 @@ static void _logSyntacticAnalyzerAction(const char * functionName) {
 }
 
 QuantifierType convertToQuantifier(char * quantifier) {
-	if (strcmp(quantifier, ">=")){
+	if (!strcmp(quantifier, ">=")){
 		return GREATEREQUALS;
-	} else if (strcmp(quantifier, ">")){
+	} else if (!strcmp(quantifier, ">")){
 		return GREATERTHAN;
-	} else if (strcmp(quantifier, "<=")){
+	} else if (!strcmp(quantifier, "<=")){
 		return LESSEREQUALS;
-	} else if (strcmp(quantifier, "<")){
+	} else if (!strcmp(quantifier, "<")){
 		return LESSERTHAN;
 	} else {
 		return EQUALS;
@@ -228,6 +231,7 @@ Metatag * StringMetatagSemanticAction(char * metatag, String * argument) {
 	meta->metatagname = metatag;
 	meta->string = argument;
 	meta->type = TYPESTRING;
+	meta->metatag = _getMetatagType(metatag);
 	return meta;
 }
 
@@ -237,6 +241,7 @@ Metatag * IntegerMetatagSemanticAction(char * metatag, Integer * argument) {
 	meta->metatagname = metatag;
 	meta->integer = argument;
 	meta->type = TYPEINTEGER;
+	meta->metatag = _getMetatagType(metatag);
 	return meta;
 }
 
@@ -246,6 +251,7 @@ Metatag * DateMetatagSemanticAction(char * metatag, Date * argument) {
 	meta->metatagname = metatag;
 	meta->date = argument;
 	meta->type = TYPEDATE;
+	meta->metatag = _getMetatagType(metatag);
 	return meta;
 }
 
@@ -255,6 +261,7 @@ Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument) {
 	meta->metatagname = metatag;
 	meta->size = argument;
 	meta->type = TYPESIZE;
+	meta->metatag = FILE_SIZE;
 	return meta;
 }
 
@@ -264,6 +271,7 @@ Metatag * RecallMetatagSemanticAction(char * metatag, String * recallable) {
 	meta->metatagname = metatag;
 	meta->string = recallable;
 	meta->type = TYPERECALL;
+	meta->metatag = METARECALL;
 	return meta;
 }
 
@@ -334,28 +342,32 @@ Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date) {
 }
 
 
-SemanticSize * SizeSemanticAction(char * size) {
+SemanticSize * SizeSemanticAction(char * size, char * sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->size = size;
+	field->size = atoi(size);
+	field->sizequantifier = _getSizeQuantifier(sizequant);
 	field->quantifier = EQUALS;
 	field->fieldtype = UNDEFINEDRANGED;
 	return field;
 }
 
-SemanticSize * RangedSizeSemanticAction(char * start, char * end) {
+SemanticSize * RangedSizeSemanticAction(char * start, char * startquant, char * end, char * endquant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->start = start;
-	field->end = end;
+	field->start = atoi(start);
+	field->end = atoi(end);
+	field->quantifierstart = _getSizeQuantifier(startquant);
+	field->quantifierend = _getSizeQuantifier(endquant);
 	field->fieldtype = RANGED;
 	return field;
 }
 
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size) {
+SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size, char * sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->size = size;
+	field->size = atoi(size);
+	field->sizequantifier = _getSizeQuantifier(sizequant);
 	field->quantifier = convertToQuantifier(quantifier);
 	field->fieldtype = UNDEFINEDRANGED;
 	free(quantifier);
@@ -374,4 +386,48 @@ Query * EmptySemanticAction() {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Query * q = calloc(1, sizeof(Query));
 	return q;
+}
+
+MetatagType _getMetatagType(char * t){
+	if (!strcmp(t, "name")){
+		return NAME;
+	} else if (!strcmp(t, "createdby")){
+		return CREATED_BY;
+	} else if (!strcmp(t, "createdon")){
+		return CREATED_ON;
+	} else if (!strcmp(t, "editedby")){
+		return EDITED_BY;
+	} else if (!strcmp(t, "editedon")){
+		return EDITED_ON;
+	} else if (!strcmp(t, "lasteditedby")){
+		return LASTEDITED_BY;
+	} else if (!strcmp(t, "lasteditedon")){
+		return LASTEDITED_ON;
+	} else if (!strcmp(t, "likedby")){
+		return LIKED_BY;
+	} else if (!strcmp(t, "likes")){
+		return LIKES_AMOUNT;
+	} else if (!strcmp(t, "type")){
+		return FILE_TYPE;
+	} else if (!strcmp(t, "size")){
+		return FILE_SIZE;
+	} else if (!strcmp(t, "views")){
+		return VIEWS_AMOUNT;
+	} else if (!strcmp(t, "pool")){
+		return POOL;
+	} else if (!strcmp(t, "recall")){
+		return RECALL;
+	}
+}
+
+SizeType _getSizeQuantifier(char * q) {
+	if (!strcmp(q, "KiB")){
+		return KIB;
+	} else if (!strcmp(q, "MiB")){
+		return MIB;
+	} else if (!strcmp(q, "GiB")){
+		return GIB;
+	} else {
+		return BYTE;
+	}
 }

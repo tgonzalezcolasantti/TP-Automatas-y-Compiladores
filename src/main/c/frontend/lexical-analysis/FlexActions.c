@@ -140,7 +140,7 @@ Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCont
 	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
 	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
 	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
-	return SEMANTICSIZE;
+	return SIZEQUANT;
 }
 
 Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match) {

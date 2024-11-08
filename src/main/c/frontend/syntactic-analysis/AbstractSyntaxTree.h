@@ -19,8 +19,11 @@ typedef enum FactorType FactorType;
 typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
 typedef enum MetaType MetaType;
+typedef enum MetatagType MetatagType;
 typedef enum QuantifierType QuantifierType;
 typedef enum MatchType MatchType;
+typedef enum SizeType SizeType;
+
 
 
 
@@ -92,6 +95,30 @@ enum QuantifierType {
 	LESSEREQUALS
 };
 
+enum SizeType {
+	BYTE,
+	KIB,
+	MIB,
+	GIB
+};
+
+enum MetatagType{
+	NAME, 
+	CREATED_ON,
+	CREATED_BY,
+	EDITED_BY,
+	EDITED_ON, 
+	LASTEDITED_BY,
+	LASTEDITED_ON,
+	LIKED_BY,
+	LIKES_AMOUNT,
+	FILE_TYPE,
+	FILE_SIZE,
+	VIEWS_AMOUNT,
+	POOL,
+	METARECALL
+};
+
 struct Program {
 	Query * query;
 };
@@ -159,6 +186,7 @@ struct Metatag {
 		SemanticSize * size;
 	};
 	MetaType type;
+	MetatagType metatag;
 };
 
 struct String {
@@ -195,12 +223,15 @@ struct Date {
 struct SemanticSize {
 	union{
 		struct {
-			char * size;
+			int size;
+			SizeType sizequantifier;
 			QuantifierType quantifier;
 		};
 		struct {
-			char * start;
-			char * end;
+			int start;
+			SizeType quantifierstart;
+			int end;
+			SizeType quantifierend;
 		};
 	};
 	FieldType fieldtype;

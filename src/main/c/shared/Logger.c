@@ -18,7 +18,7 @@ static void _log(const Logger * logger, const LoggingLevel loggingLevel, const c
 			_logInStream(stderr, effectiveFormat, arguments);
 		}
 		else {
-			_logInStream(stdout, effectiveFormat, arguments);
+			_logInStream(stderr, effectiveFormat, arguments);
 		}
 		free(effectiveFormat);
 	}

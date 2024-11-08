@@ -1,0 +1,1 @@
+psql -h 172.25.16.1 -p 5432 -U postgres
