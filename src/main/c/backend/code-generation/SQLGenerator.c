@@ -20,12 +20,12 @@ void shutdownSQLGeneratorModule() {
 /** PRIVATE FUNCTIONS */
 
 static const char * _expressionTypeToOperator(const ExpressionType type);
-static void _generateConstant(char * constant);														//OK (?)
-static void _generateEpilogue(void);
+static void _generateConstant(char * constant);														//OK
+static void _generateEpilogue(void);																//OK
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
 static void _generateTag(const unsigned int indentationLevel, Tag * t);								//OK
-static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						
+static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						//OK (EXCEPT RECALL)
 static void _generateProgram(Program * program);													//OK
 static void _generateQuery(const unsigned int indentationLevel, Query * q);							
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s);				
@@ -34,11 +34,11 @@ static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryn
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m);					//OK
 static void _generateOrderType(Ordertypenode * o);													//OK
 static void _generateInteger(Integer * i);															//OK
-static void _generateDate(Date * d);
+static void _generateDate(Date * d);																//OK
 static void _generateSize(SemanticSize * s);														//OK
 static void _generateQuantifier(QuantifierType q);													//OK
 static void _generateString(String * s);															//OK
-static void _generatePrologue(void);
+static void _generatePrologue(void);																//OK
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
 static int _sizetobytes(int size, SizeType type);
