@@ -48,7 +48,7 @@ const int main(const int count, const char ** arguments) {
 		if (true) {
 			//compilerState.value = computationResult.value;
 			//generateAST(&compilerState);
-			generateSQL(&compilerState);
+			//generateSQL(&compilerState);
 		}
 		else {
 			logError(logger, "The computation phase rejects the input program.");

@@ -22,7 +22,6 @@ extern unsigned int flexCurrentContext(void);
 /* PRIVATE FUNCTIONS */
 
 static void _logSyntacticAnalyzerAction(const char * functionName);
-MetatagType _getMetatagType(char * t);
 SizeType _getSizeQuantifier(char * q);
 
 
@@ -225,50 +224,45 @@ Factor * MetatagFactorSemanticAction(Metatag * metatag) {
 }
 
 
-Metatag * StringMetatagSemanticAction(char * metatag, String * argument) {
+Metatag * StringMetatagSemanticAction(MetatagType metatag, String * argument) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
-	meta->metatagname = metatag;
 	meta->string = argument;
 	meta->type = TYPESTRING;
-	meta->metatag = _getMetatagType(metatag);
+	meta->metatag = metatag;
 	return meta;
 }
 
-Metatag * IntegerMetatagSemanticAction(char * metatag, Integer * argument) {
+Metatag * IntegerMetatagSemanticAction(MetatagType metatag, Integer * argument) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
-	meta->metatagname = metatag;
 	meta->integer = argument;
 	meta->type = TYPEINTEGER;
-	meta->metatag = _getMetatagType(metatag);
+	meta->metatag = metatag;
 	return meta;
 }
 
-Metatag * DateMetatagSemanticAction(char * metatag, Date * argument) {
+Metatag * DateMetatagSemanticAction(MetatagType metatag, Date * argument) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
-	meta->metatagname = metatag;
 	meta->date = argument;
 	meta->type = TYPEDATE;
-	meta->metatag = _getMetatagType(metatag);
+	meta->metatag = metatag;
 	return meta;
 }
 
-Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument) {
+Metatag * SizeMetatagSemanticAction(SemanticSize * argument) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
-	meta->metatagname = metatag;
 	meta->size = argument;
 	meta->type = TYPESIZE;
 	meta->metatag = FILE_SIZE;
 	return meta;
 }
 
-Metatag * RecallMetatagSemanticAction(char * metatag, String * recallable) {
+Metatag * RecallMetatagSemanticAction(String * recallable) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Metatag * meta = calloc(1, sizeof(Metatag));
-	meta->metatagname = metatag;
 	meta->string = recallable;
 	meta->type = TYPERECALL;
 	meta->metatag = METARECALL;
@@ -285,7 +279,7 @@ String * StringSemanticAction(char * string, boolean match) {
 }
 
 
-Integer * IntegerSemanticAction(char * integer) {
+Integer * IntegerSemanticAction(int integer) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Integer * field = calloc(1, sizeof(Integer));
 	field->integer = integer;
@@ -294,7 +288,7 @@ Integer * IntegerSemanticAction(char * integer) {
 	return field;
 }
 
-Integer * RangedIntegerSemanticAction(char * start, char * end) {
+Integer * RangedIntegerSemanticAction(int start, int end) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Integer * field = calloc(1, sizeof(Integer));
 	field->start = start;
@@ -303,7 +297,7 @@ Integer * RangedIntegerSemanticAction(char * start, char * end) {
 	return field;
 }
 
-Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, char * integer) {
+Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, int integer) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Integer * field = calloc(1, sizeof(Integer));
 	field->integer = integer;
@@ -345,31 +339,31 @@ Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean 
 }
 
 
-SemanticSize * SizeSemanticAction(char * size, char * sizequant){
+SemanticSize * SizeSemanticAction(int size, char * sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->size = atoi(size);
+	field->size = size;
 	field->sizequantifier = _getSizeQuantifier(sizequant);
 	field->quantifier = EQUALS;
 	field->fieldtype = UNDEFINEDRANGED;
 	return field;
 }
 
-SemanticSize * RangedSizeSemanticAction(char * start, char * startquant, char * end, char * endquant){
+SemanticSize * RangedSizeSemanticAction(int start, char * startquant, int end, char * endquant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->start = atoi(start);
-	field->end = atoi(end);
+	field->start = start;
+	field->end = end;
 	field->quantifierstart = _getSizeQuantifier(startquant);
 	field->quantifierend = _getSizeQuantifier(endquant);
 	field->fieldtype = RANGED;
 	return field;
 }
 
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size, char * sizequant){
+SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, int size, char * sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
-	field->size = atoi(size);
+	field->size = size;
 	field->sizequantifier = _getSizeQuantifier(sizequant);
 	field->quantifier = convertToQuantifier(quantifier);
 	field->fieldtype = UNDEFINEDRANGED;
@@ -389,38 +383,6 @@ Query * EmptySemanticAction() {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Query * q = calloc(1, sizeof(Query));
 	return q;
-}
-
-MetatagType _getMetatagType(char * t){
-	if (!strcmp(t, "name")){
-		return NAME;
-	} else if (!strcmp(t, "createdby")){
-		return CREATED_BY;
-	} else if (!strcmp(t, "createdon")){
-		return CREATED_ON;
-	} else if (!strcmp(t, "editedby")){
-		return EDITED_BY;
-	} else if (!strcmp(t, "editedon")){
-		return EDITED_ON;
-	} else if (!strcmp(t, "lasteditedby")){
-		return LASTEDITED_BY;
-	} else if (!strcmp(t, "lasteditedon")){
-		return LASTEDITED_ON;
-	} else if (!strcmp(t, "likedby")){
-		return LIKED_BY;
-	} else if (!strcmp(t, "likes")){
-		return LIKES_AMOUNT;
-	} else if (!strcmp(t, "type")){
-		return FILE_TYPE;
-	} else if (!strcmp(t, "size")){
-		return FILE_SIZE;
-	} else if (!strcmp(t, "views")){
-		return VIEWS_AMOUNT;
-	} else if (!strcmp(t, "pool")){
-		return POOL;
-	} else if (!strcmp(t, "recall")){
-		return RECALL;
-	}
 }
 
 SizeType _getSizeQuantifier(char * q) {

@@ -163,15 +163,6 @@ void releaseString(String * str) {
 void releaseInteger(Integer * integer) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (integer != NULL) {
-		switch (integer->fieldtype) {
-			case UNDEFINEDRANGED:
-				free(integer->integer);
-				break;			
-			case RANGED:
-				free(integer->start);
-				free(integer->end);
-				break;
-		}
 		free(integer);
 	}
 }

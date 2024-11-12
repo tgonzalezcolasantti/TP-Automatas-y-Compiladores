@@ -44,25 +44,25 @@ Factor * ExpressionFactorSemanticAction(Expression * expression);
 Factor * TagFactorSemanticAction(Tag * tag);
 Factor * MetatagFactorSemanticAction(Metatag * metatag);
 
-Metatag * StringMetatagSemanticAction(char * metatag, String * argument);
-Metatag * IntegerMetatagSemanticAction(char * metatag, Integer * argument);
-Metatag * DateMetatagSemanticAction(char * metatag, Date * argument);
-Metatag * SizeMetatagSemanticAction(char * metatag, SemanticSize * argument);
-Metatag * RecallMetatagSemanticAction(char * metatag, String * recallable);
+Metatag * StringMetatagSemanticAction(MetatagType metatag, String * argument);
+Metatag * IntegerMetatagSemanticAction(MetatagType metatag, Integer * argument);
+Metatag * DateMetatagSemanticAction(MetatagType metatag, Date * argument);
+Metatag * SizeMetatagSemanticAction(SemanticSize * argument);
+Metatag * RecallMetatagSemanticAction(String * recallable);
 
 String * StringSemanticAction(char * string, boolean match);
 
-Integer * IntegerSemanticAction(char * integer);
-Integer * RangedIntegerSemanticAction(char * start, char * end);
-Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, char * integer);
+Integer * IntegerSemanticAction(int integer);
+Integer * RangedIntegerSemanticAction(int start, int end);
+Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, int integer);
 
 Date * DateSemanticAction(char * date, boolean hasTime);
 Date * RangedDateSemanticAction(char * start, char * end, boolean hasTime);
 Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean hasTime);
 
-SemanticSize * SizeSemanticAction(char * size, char * sizequant);
-SemanticSize * RangedSizeSemanticAction(char * start, char * startquant, char * end, char * endquant);
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, char * size, char * sizequant);
+SemanticSize * SizeSemanticAction(int size, char * sizequant);
+SemanticSize * RangedSizeSemanticAction(int start, char * startquant, int end, char * endquant);
+SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, int size, char * sizequant);
 
 Tag * TagSemanticAction(String * string);
 Query * EmptySemanticAction();

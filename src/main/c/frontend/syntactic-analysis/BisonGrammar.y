@@ -12,6 +12,10 @@
 	char* string;
 	int integer;
 	Token token;
+	MetatagType metatype;
+	OrderType ordertype;
+	QuantifierType quantifiertype;
+	SizeType sizetype;
 
 	/** Non-terminals. */
 
@@ -51,16 +55,16 @@
 %token <string> STRING				//OK
 %token <string> STRMATCH			//OK
 
-%token <string> STRMETA				//OK
-%token <string> INTMETA				//OK
-%token <string> DATEMETA			//OK
-%token <string> SIZEMETA			//OK
+%token <metatype> STRMETA				//OK
+%token <metatype> INTMETA				//OK
+%token <metatype> DATEMETA			//OK
+%token <metatype> SIZEMETA			//OK
 %token <string> ORDERMETA			//OK
-%token <string> INTEGER				//OK
+%token <integer> INTEGER			//OK
 %token <string> DATE				//OK
 %token <string> DATETIME			//OK
 %token <string> SIZEQUANT			//OK
-%token <string> RECALL				//OK
+%token <metatype> RECALL				//OK
 
 
 
@@ -163,8 +167,8 @@ factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactor
 metatag: STRMETA string												{ $$ = StringMetatagSemanticAction($1, $2); }
 	| INTMETA integer												{ $$ = IntegerMetatagSemanticAction($1, $2); }
 	| DATEMETA date													{ $$ = DateMetatagSemanticAction($1, $2); }
-	| SIZEMETA size													{ $$ = SizeMetatagSemanticAction($1, $2); }
-	| RECALL string													{ $$ = RecallMetatagSemanticAction($1, $2); }
+	| SIZEMETA size													{ $$ = SizeMetatagSemanticAction($2); }
+	| RECALL string													{ $$ = RecallMetatagSemanticAction($2); }
 	;
 
 string: STRING														{ $$ = StringSemanticAction($1, false); }

@@ -197,11 +197,11 @@ struct String {
 struct Integer {
 	union{
 		struct {
-			char * integer;
+			int integer;
 			QuantifierType quantifier;
 		};		struct {
-			char * start;
-			char * end;
+			int start;
+			int end;
 		};
 	};
 	FieldType fieldtype;

@@ -30,9 +30,9 @@ Token NOTOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
 
-Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token MetatagIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token MetatagDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, MetatagType metatag);
+Token MetatagIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, MetatagType metatag);
+Token MetatagDateLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, MetatagType metatag);
 Token MetatagSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetatagOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetatagRecallLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
