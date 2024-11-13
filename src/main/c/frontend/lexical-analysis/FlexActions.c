@@ -34,13 +34,6 @@ static void _logLexicalAnalyzerContext(const char * functionName, LexicalAnalyze
 	free(escapedLexeme);
 }
 
-unsigned int trim(const LexicalAnalyzerContext * context) {
-	int i;
-	for (i = context->length; i && context->lexeme[i] && context->lexeme[i] != ' '; i--){
-	}
-	return i;
-}
-
 /* PUBLIC FUNCTIONS */
 
 void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
