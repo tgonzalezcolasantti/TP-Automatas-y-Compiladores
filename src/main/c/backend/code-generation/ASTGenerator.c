@@ -186,7 +186,9 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
  */
 static void _generateProgram(Program * program) {			
 	_output(2, "%s", "[ $P$, circle, draw, green\n");
-	_generateQuery(3, program->query);
+	if (program->query){
+		_generateQuery(3, program->query);
+	}
 	_output(2, "%s", "]\n");
 }
 

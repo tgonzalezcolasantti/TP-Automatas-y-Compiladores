@@ -18,7 +18,9 @@ void shutdownAbstractSyntaxTreeModule() {
 void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
-		releaseQuery(program->query);
+		if (program->query) {
+			releaseQuery(program->query);
+		}
 		free(program);
 	}
 }

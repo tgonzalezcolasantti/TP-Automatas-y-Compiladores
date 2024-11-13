@@ -37,7 +37,6 @@ WILDSTRING              {WILD}?{STRING}{WILD}?
 WILD                    "*"
 RANGE                   ".."
 METATAG_SEPARATOR       ":"
-QUANT                   (">"|"<"|">="|"<=")
 
 METATAG_SIZE            "size"
 METATAG_ORDER           "order"
@@ -98,11 +97,9 @@ METATAG_RECALL          "recall"
 {STRING}                                    { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 {WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext(), true); }
 
-{SPACER}+/{METATAG_ORDER}                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
-
 {SPACER}+/({WILDSTRING}|"("|"!")            { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), AND); }
-{SPACER}+"|"{SPACER}+                       { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), OR); }
-"!"/({WILDSTRING}|"(")                      { return NOTOperatorLexemeAction(createLexicalAnalyzerContext()); }
+"|"{SPACER}+                                { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), OR); }
+"!"                                         { return NOTOperatorLexemeAction(createLexicalAnalyzerContext()); }
 
 {SPACER}+|{METATAG_SEPARATOR}               { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 

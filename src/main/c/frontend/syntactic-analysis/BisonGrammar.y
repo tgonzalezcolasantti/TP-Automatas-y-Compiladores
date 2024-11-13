@@ -119,10 +119,10 @@
 program: query														{ $$ = ProgramSemanticAction(currentCompilerState(), $1); }
 
 query: expression													{ $$ = ExpressionQuerySemanticAction($1); }
-	| expression metaorder											{ $$ = ExpressionWithOrderProgramSemanticAction($1, $2); }
+	| expression AND metaorder										{ $$ = ExpressionWithOrderProgramSemanticAction($1, $3); }
 	| metaorder														{ $$ = OrderProgramSemanticAction($1); }
 	| subqueries expression											{ $$ = ExpressionSubquerySemanticAction($1, $2); }
-	| subqueries expression metaorder								{ $$ = ExpressionSubqueryOrderedSemanticAction($1, $2, $3); }
+	| subqueries expression AND metaorder							{ $$ = ExpressionSubqueryOrderedSemanticAction($1, $2, $4); }
     | %empty														{ $$ = EmptySemanticAction(); }
 
 	;

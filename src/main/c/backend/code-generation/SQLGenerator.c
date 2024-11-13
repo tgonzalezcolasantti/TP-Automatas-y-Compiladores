@@ -266,7 +266,9 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
  * Generates the output of the program.
  */
 static void _generateProgram(Program * program) {	
-	_generateQuery(0, program->query);
+	if (program->query) {
+		_generateQuery(0, program->query);
+	}
 }
 
 /**
