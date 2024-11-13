@@ -98,9 +98,6 @@ Token MetaparameterQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyz
 
 Token MetaparameterRangeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
-	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
 	return RANGE;
 }
 
