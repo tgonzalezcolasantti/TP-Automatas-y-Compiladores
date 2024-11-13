@@ -359,8 +359,7 @@ Tag * TagSemanticAction(String * string) {
 
 Query * EmptySemanticAction() {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Query * q = calloc(1, sizeof(Query));
-	return q;
+	return NULL;
 }
 
 SizeType _getSizeQuantifier(char * q) {
