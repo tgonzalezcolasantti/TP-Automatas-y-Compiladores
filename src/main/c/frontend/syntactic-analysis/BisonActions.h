@@ -54,15 +54,15 @@ String * StringSemanticAction(char * string, boolean match);
 
 Integer * IntegerSemanticAction(int integer);
 Integer * RangedIntegerSemanticAction(int start, int end);
-Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, int integer);
+Integer * UndefinedRangeIntegerSemanticAction(QuantifierType quantifier, int integer);
 
 Date * DateSemanticAction(char * date, boolean hasTime);
 Date * RangedDateSemanticAction(char * start, char * end, boolean hasTime);
-Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean hasTime);
+Date * UndefinedRangeDateSemanticAction(QuantifierType quantifier, char * date, boolean hasTime);
 
-SemanticSize * SizeSemanticAction(int size, char * sizequant);
-SemanticSize * RangedSizeSemanticAction(int start, char * startquant, int end, char * endquant);
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, int size, char * sizequant);
+SemanticSize * SizeSemanticAction(int size, SizeType sizequant);
+SemanticSize * RangedSizeSemanticAction(int start, SizeType startquant, int end, SizeType endquant);
+SemanticSize * UndefinedRangeSizeSemanticAction(QuantifierType quantifier, int size, SizeType sizequant);
 
 Tag * TagSemanticAction(String * string);
 Query * EmptySemanticAction();

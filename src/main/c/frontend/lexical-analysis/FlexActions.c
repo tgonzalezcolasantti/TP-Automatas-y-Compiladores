@@ -90,11 +90,9 @@ Token MetatagRecallLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext)
 	return RECALL;
 }
 
-Token MetaparameterQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token MetaparameterQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, QuantifierType quantifier) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(lexicalAnalyzerContext->length + 1);
-	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = 0;
+	lexicalAnalyzerContext->semanticValue->quantifiertype = quantifier;
 	return QUANTIFIER;
 }
 
@@ -121,9 +119,9 @@ Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzer
 	return DATE;
 }
 
-Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext) {
+Token MetaparameterSizeQuantifierLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, SizeType size){
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = lexicalAnalyzerContext->lexeme;
+	lexicalAnalyzerContext->semanticValue->sizetype = size;
 	return SIZEQUANT;
 }
 

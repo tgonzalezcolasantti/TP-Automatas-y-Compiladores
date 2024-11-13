@@ -278,13 +278,12 @@ Integer * RangedIntegerSemanticAction(int start, int end) {
 	return field;
 }
 
-Integer * UndefinedRangeIntegerSemanticAction(char * quantifier, int integer) {
+Integer * UndefinedRangeIntegerSemanticAction(QuantifierType quantifier, int integer) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Integer * field = calloc(1, sizeof(Integer));
 	field->integer = integer;
-	field->quantifier = convertToQuantifier(quantifier);
+	field->quantifier = quantifier;
 	field->fieldtype = UNDEFINEDRANGED;
-	free(quantifier);
 	return field;
 }
 
@@ -308,47 +307,45 @@ Date * RangedDateSemanticAction(char * start, char * end, boolean hasTime) {
 	return field;
 }
 
-Date * UndefinedRangeDateSemanticAction(char * quantifier, char * date, boolean hasTime) {
+Date * UndefinedRangeDateSemanticAction(QuantifierType quantifier, char * date, boolean hasTime) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Date * field = calloc(1, sizeof(Date));
 	field->date = date;
-	field->quantifier = convertToQuantifier(quantifier);
+	field->quantifier = quantifier;
 	field->hasTime = hasTime;
 	field->fieldtype = UNDEFINEDRANGED;
-	free(quantifier);
 	return field;
 }
 
 
-SemanticSize * SizeSemanticAction(int size, char * sizequant){
+SemanticSize * SizeSemanticAction(int size, SizeType sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
 	field->size = size;
-	field->sizequantifier = _getSizeQuantifier(sizequant);
+	field->sizequantifier = sizequant;
 	field->quantifier = EQUALS;
 	field->fieldtype = UNDEFINEDRANGED;
 	return field;
 }
 
-SemanticSize * RangedSizeSemanticAction(int start, char * startquant, int end, char * endquant){
+SemanticSize * RangedSizeSemanticAction(int start, SizeType startquant, int end, SizeType endquant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
 	field->start = start;
 	field->end = end;
-	field->quantifierstart = _getSizeQuantifier(startquant);
-	field->quantifierend = _getSizeQuantifier(endquant);
+	field->quantifierstart = startquant;
+	field->quantifierend = endquant;
 	field->fieldtype = RANGED;
 	return field;
 }
 
-SemanticSize * UndefinedRangeSizeSemanticAction(char * quantifier, int size, char * sizequant){
+SemanticSize * UndefinedRangeSizeSemanticAction(QuantifierType quantifier, int size, SizeType sizequant){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	SemanticSize * field = calloc(1, sizeof(SemanticSize));
 	field->size = size;
-	field->sizequantifier = _getSizeQuantifier(sizequant);
-	field->quantifier = convertToQuantifier(quantifier);
+	field->sizequantifier = sizequant;
+	field->quantifier = quantifier;
 	field->fieldtype = UNDEFINEDRANGED;
-	free(quantifier);
 	return field;
 }
 

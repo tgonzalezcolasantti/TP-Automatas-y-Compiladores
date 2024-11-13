@@ -63,7 +63,7 @@
 %token <integer> INTEGER			//OK
 %token <string> DATE				//OK
 %token <string> DATETIME			//OK
-%token <string> SIZEQUANT			//OK
+%token <sizetype> SIZEQUANT			//OK
 %token <metatype> RECALL				//OK
 
 
@@ -78,7 +78,7 @@
 %token <token> AND					//OK
 
 %token <token> RANGE				//OK
-%token <string> QUANTIFIER			//OK
+%token <quantifiertype> QUANTIFIER	//OK
 
 %token <token> DESC					//ok
 %token <ordertype> ORDER 			//OK

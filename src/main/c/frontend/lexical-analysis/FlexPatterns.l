@@ -69,7 +69,10 @@ METATAG_RECALL          "recall"
 {METATAG_RECALL}                            { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
 {RANGE}                                     { BEGIN(METATAG_ARG); return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
-<METATAG_ARG>{QUANT}                        { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext()); }
+<METATAG_ARG>">"                            { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext(), GREATERTHAN); }
+<METATAG_ARG>"<"                            { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext(), LESSERTHAN); }
+<METATAG_ARG>">="                           { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext(), GREATEREQUALS); }
+<METATAG_ARG>"<="                           { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext(), LESSEREQUALS); }
 {DESCENDORDER}                              { return MetaparameterOrderReverseLexemeAction(createLexicalAnalyzerContext()); }
 
 <METATAG_ARG>"creationdate"                 { END_METATAG_CONTEXT; return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext(), ORDER_CREATIONDATE); }
@@ -79,10 +82,15 @@ METATAG_RECALL          "recall"
 <METATAG_ARG>"views"                        { END_METATAG_CONTEXT; return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext(), ORDER_VIEWS); }
 <METATAG_ARG>"random"                       { END_METATAG_CONTEXT; return MetaparameterOrderLexemeAction(createLexicalAnalyzerContext(), ORDER_RANDOM); }
 
+<METATAG_ARG>"B"                            { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), BYTE); }
+<METATAG_ARG>"KiB"                          { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), KIB); }
+<METATAG_ARG>"MiB"                          { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), MIB); }
+<METATAG_ARG>"GiB"                          { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), GIB); }
+
+
 <METATAG_ARG>{INT}                          { END_METATAG_CONTEXT; return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{DATETIME}                     { END_METATAG_CONTEXT; return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), true); }
 <METATAG_ARG>{DATE}                         { END_METATAG_CONTEXT; return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), false); }
-<METATAG_ARG>{SIZEQUANT}                    { END_METATAG_CONTEXT; return MetaparameterSizeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{INT}/{SIZEQUANT}              { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{STRING}                       { END_METATAG_CONTEXT; return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), false); }
 <METATAG_ARG>{WILDSTRING}                   { END_METATAG_CONTEXT; return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), true); }
