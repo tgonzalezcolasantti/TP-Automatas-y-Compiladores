@@ -43,7 +43,7 @@ Token MetaparameterIntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerC
 Token MetaparameterDatetimeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean includeDate);
 Token MetaparameterSizeLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token MetaparameterStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, boolean match);
-Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token MetaparameterOrderLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, OrderType order);
 Token MetaparameterOrderReverseLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
 

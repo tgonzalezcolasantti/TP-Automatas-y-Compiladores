@@ -146,29 +146,10 @@ Metaorder * MetaorderSemanticAction(Ordertypenode * order, boolean descending) {
 }
 
 
-Ordertypenode * OrdertypeSemanticAction(Token order) {
+Ordertypenode * OrdertypeSemanticAction(OrderType order) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Ordertypenode * ordertype = calloc(1, sizeof(Ordertypenode));
-	switch(order){
-		case ORDERCREATIONDATE:
-			ordertype->order = CREATIONDATE;
-			break;
-		case ORDERLASTEDIT:
-			ordertype->order = LASTEDIT;
-			break;
-		case ORDERLIKES:
-			ordertype->order = LIKES;
-			break;
-		case ORDERSIZE:
-			ordertype->order = SIZE;
-			break;
-		case ORDERVIEWS:
-			ordertype->order = VIEWS;
-			break;
-		case ORDERRANDOM:
-			ordertype->order = RANDOM;
-			break;
-	}
+	ordertype->order = order;
 	return ordertype;
 }
 

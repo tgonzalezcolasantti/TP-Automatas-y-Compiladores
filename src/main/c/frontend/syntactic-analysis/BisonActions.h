@@ -34,7 +34,7 @@ Subqueryname * SubquerynameSemanticAction(char * name);
 
 Metaorder * MetaorderSemanticAction(Ordertypenode * order, boolean descending);
 
-Ordertypenode * OrdertypeSemanticAction(Token order);
+Ordertypenode * OrdertypeSemanticAction(OrderType order);
 
 Expression * BinaryExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
 Expression * NegatedExpressionSemanticAction(Expression * expression);

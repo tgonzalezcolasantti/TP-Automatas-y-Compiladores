@@ -20,7 +20,7 @@ void shutdownSQLGeneratorModule() {
 /** PRIVATE FUNCTIONS */
 
 static const char * _expressionTypeToOperator(const ExpressionType type);
-static void _generateConstant(char * constant);														//OK
+static void _generateConstantString(char * constant);												//OK
 static void _generateEpilogue(void);																//OK
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
@@ -74,7 +74,7 @@ static int _sizetobytes(int size, SizeType type){
 /**
  * Generates the output of a constant.
  */
-static void _generateConstant(char * constant) {
+static void _generateConstantString(char * constant) {
 	int i = 0;
 	while (constant[i]){
 		if (constant[i] == '*')
@@ -312,7 +312,7 @@ static void _generateSubquery(const unsigned int indentationLevel, Subquery * s)
  */
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n) {
 	_output(indentationLevel, "%s", "[ $N$, circle, draw, magenta\n");
-	_generateConstant(n->name);
+	_generateConstantString(n->name);
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -330,22 +330,22 @@ static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * 
  */
 static void _generateOrderType(Ordertypenode * o) {
 	switch(o->order) {
-		case CREATIONDATE:
+		case ORDER_CREATIONDATE:
 			_output(0, "created_on ");
 			break;
-		case LASTEDIT:
+		case ORDER_LASTEDIT:
 			_output(0, "last_edited_on ");
 			break;
-		case LIKES:
+		case ORDER_LIKES:
 			_output(0, "likes ");
 			break;
-		case SIZE:
+		case ORDER_SIZE:
 			_output(0, "size ");
 			break;
-		case VIEWS:
+		case ORDER_VIEWS:
 			_output(0, "views ");
 			break;
-		case RANDOM:
+		case ORDER_RANDOM:
 			_output(0, "RANDOM () ");
 			break;
 	}
@@ -356,13 +356,10 @@ static void _generateOrderType(Ordertypenode * o) {
  */
 static void _generateInteger(Integer * i) {
 	if (i->fieldtype == RANGED) {
-		_output(0, " BETWEEN ");
-		_generateConstant(i->start);
-		_output(0, " AND ");
-		_generateConstant(i->end);
+		_output(0, " BETWEEN '%d' AND '%d'", i->start, i->end);
 	} else {
 		_generateQuantifier(i->quantifier);
-		_generateConstant(i->integer);
+		_output(0, "'%d'", i->integer);
 	}
 }
 
@@ -406,7 +403,7 @@ static void _generateSize(SemanticSize * s) {
  */
 static void _generateString(String * s) {
 	_output(0, "%s", " ILIKE ");
-	_generateConstant(s->string);
+	_generateConstantString(s->string);
 }
 
 /**

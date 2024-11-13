@@ -20,7 +20,8 @@ void shutdownASTGeneratorModule() {
 
 static const char _expressionTypeToCharacter(const ExpressionType type);
 static const char * _sizeTypeToSize(SizeType s);
-static void _generateConstant(const unsigned int indentationLevel, char * constant);
+static void _generateConstantString(const unsigned int indentationLevel, char * constant);
+static void _generateConstantInteger(const unsigned int indentationLevel, int constant);
 static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
@@ -78,8 +79,11 @@ static const char * _sizeTypeToSize(SizeType s){
 /**
  * Generates the output of a constant.
  */
-static void _generateConstant(const unsigned int indentationLevel, char * constant) {
+static void _generateConstantString(const unsigned int indentationLevel, char * constant) {
 	_output(indentationLevel, "%s%s%s", "[ \\text{$", constant, "$}, draw, black]\n");
+}
+static void _generateConstantInteger(const unsigned int indentationLevel, int constant) {
+	_output(indentationLevel, "%s%d%s", "[ \\text{$", constant, "$}, draw, black]\n");
 }
 
 /**
@@ -158,7 +162,7 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
  */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	_output(indentationLevel, "%s", "[ $M$, circle, draw, brown\n");
-	_generateConstant(indentationLevel + 1, m->metatagname);
+	_generateConstantString(indentationLevel + 1, m->metatagname);
 	switch(m->type) {
 		case TYPESTRING:
 		case TYPERECALL:
@@ -230,7 +234,7 @@ static void _generateSubquery(const unsigned int indentationLevel, Subquery * s)
  */
 static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n) {
 	_output(indentationLevel, "%s", "[ $N$, circle, draw, magenta\n");
-	_generateConstant(indentationLevel + 1, n->name);
+	_generateConstantString(indentationLevel + 1, n->name);
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -240,7 +244,7 @@ static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryn
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m) {
 	_output(indentationLevel, "%s", "[ $O$, circle, draw, magenta\n");
 	_generateOrderType(indentationLevel + 1, m->order);
-	_generateConstant(indentationLevel + 1, (m->desc) ? "DESC" : "ASC");
+	_generateConstantString(indentationLevel + 1, (m->desc) ? "DESC" : "ASC");
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -249,23 +253,23 @@ static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * 
  */
 static void _generateOrderType(const unsigned int indentationLevel, Ordertypenode * o) {
 	switch(o->order) {
-		case CREATIONDATE:
-			_generateConstant(indentationLevel, "CREATIONDATE");
+		case ORDER_CREATIONDATE:
+			_generateConstantString(indentationLevel, "CREATIONDATE");
 			break;
-		case LASTEDIT:
-			_generateConstant(indentationLevel, "LASTEDIT");
+		case ORDER_LASTEDIT:
+			_generateConstantString(indentationLevel, "LASTEDIT");
 			break;
-		case LIKES:
-			_generateConstant(indentationLevel, "LIKES");
+		case ORDER_LIKES:
+			_generateConstantString(indentationLevel, "LIKES");
 			break;
-		case SIZE:
-			_generateConstant(indentationLevel, "SIZE");
+		case ORDER_SIZE:
+			_generateConstantString(indentationLevel, "SIZE");
 			break;
-		case VIEWS:
-			_generateConstant(indentationLevel, "VIEWS");
+		case ORDER_VIEWS:
+			_generateConstantString(indentationLevel, "VIEWS");
 			break;
-		case RANDOM:
-			_generateConstant(indentationLevel, "RANDOM");
+		case ORDER_RANDOM:
+			_generateConstantString(indentationLevel, "RANDOM");
 			break;
 	}
 }
@@ -276,10 +280,10 @@ static void _generateOrderType(const unsigned int indentationLevel, Ordertypenod
 static void _generateInteger(const unsigned int indentationLevel, Integer * i) {
 	_output(indentationLevel, "%s", "[ $I$, circle, draw, black!20\n");
 	if (i->fieldtype == RANGED) {
-		_generateConstant(indentationLevel + 1, i->start);
-		_generateConstant(indentationLevel + 1, i->end);
+		_generateConstantInteger(indentationLevel + 1, i->start);
+		_generateConstantInteger(indentationLevel + 1, i->end);
 	} else {
-		_generateConstant(indentationLevel + 1, i->integer);
+		_generateConstantInteger(indentationLevel + 1, i->integer);
 		_generateQuantifier(indentationLevel + 1, i->quantifier);
 	}
 	_output(indentationLevel, "%s", "]\n");
@@ -291,10 +295,10 @@ static void _generateInteger(const unsigned int indentationLevel, Integer * i) {
 static void _generateDate(const unsigned int indentationLevel, Date * d) {
 	_output(indentationLevel, "%s", "[ $D$, circle, draw, black!20\n");
 	if (d->fieldtype == RANGED) {
-		_generateConstant(indentationLevel + 1, d->start);
-		_generateConstant(indentationLevel + 1, d->end);
+		_generateConstantString(indentationLevel + 1, d->start);
+		_generateConstantString(indentationLevel + 1, d->end);
 	} else {
-		_generateConstant(indentationLevel + 1, d->date);
+		_generateConstantString(indentationLevel + 1, d->date);
 		_generateQuantifier(indentationLevel + 1, d->quantifier);
 	}
 	_output(indentationLevel, "%s", "]\n");
@@ -331,7 +335,7 @@ static void _generateString(const unsigned int indentationLevel, String * s) {
 	} else {
 		_output(indentationLevel + 1, "%s", "[ $Exact$, circle, draw, black!20]\n");
 	}
-	_generateConstant(indentationLevel + 1, s->string);
+	_generateConstantString(indentationLevel + 1, s->string);
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -341,19 +345,19 @@ static void _generateString(const unsigned int indentationLevel, String * s) {
 static void _generateQuantifier(const unsigned int indentationLevel, QuantifierType q) {
 	switch(q) {
 		case EQUALS:
-			_generateConstant(indentationLevel, "=");
+			_generateConstantString(indentationLevel, "=");
 			break;
 		case GREATERTHAN:
-			_generateConstant(indentationLevel, ">");
+			_generateConstantString(indentationLevel, ">");
 			break;
 		case GREATEREQUALS:
-			_generateConstant(indentationLevel, ">=");
+			_generateConstantString(indentationLevel, ">=");
 			break;
 		case LESSERTHAN:
-			_generateConstant(indentationLevel, "<");
+			_generateConstantString(indentationLevel, "<");
 			break;
 		case LESSEREQUALS:
-			_generateConstant(indentationLevel, "<=");
+			_generateConstantString(indentationLevel, "<=");
 			break;
 	}
 }

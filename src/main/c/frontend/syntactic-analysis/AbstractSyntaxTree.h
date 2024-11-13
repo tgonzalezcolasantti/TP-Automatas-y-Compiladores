@@ -60,12 +60,12 @@ enum ExpressionType {
 };
 
 enum OrderType {
-	CREATIONDATE,
-	LASTEDIT,
-	LIKES,
-	SIZE,
-	VIEWS,
-	RANDOM
+	ORDER_CREATIONDATE,
+	ORDER_LASTEDIT,
+	ORDER_LIKES,
+	ORDER_SIZE,
+	ORDER_VIEWS,
+	ORDER_RANDOM
 };
 
 enum FactorType {

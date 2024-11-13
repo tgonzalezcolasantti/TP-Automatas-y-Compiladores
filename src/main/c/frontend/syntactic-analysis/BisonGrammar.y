@@ -81,12 +81,7 @@
 %token <string> QUANTIFIER			//OK
 
 %token <token> DESC					//ok
-%token <token> ORDERCREATIONDATE	//OK
-%token <token> ORDERLIKES			//OK
-%token <token> ORDERVIEWS			//OK
-%token <token> ORDERLASTEDIT		//OK
-%token <token> ORDERSIZE			//OK
-%token <token> ORDERRANDOM			//OK	
+%token <ordertype> ORDER 			//OK
 
 %token <token> UNKNOWN
 
@@ -139,12 +134,7 @@ metaorder: ORDERMETA ordertype										{ $$ = MetaorderSemanticAction($2, false
 	| ORDERMETA ordertype DESC										{ $$ = MetaorderSemanticAction($2, true); }
 	;
 
-ordertype: ORDERCREATIONDATE										{ $$ = OrdertypeSemanticAction(ORDERCREATIONDATE); }
-	| ORDERLASTEDIT													{ $$ = OrdertypeSemanticAction(ORDERLASTEDIT); }
-	| ORDERLIKES													{ $$ = OrdertypeSemanticAction(ORDERLIKES); }
-	| ORDERSIZE														{ $$ = OrdertypeSemanticAction(ORDERSIZE); }
-	| ORDERVIEWS													{ $$ = OrdertypeSemanticAction(ORDERVIEWS); }
-	| ORDERRANDOM													{ $$ = OrdertypeSemanticAction(ORDERRANDOM); }
+ordertype: ORDER													{ $$ = OrdertypeSemanticAction($1); }
 	;
 
 subquery: OPEN_BRACES expression CLOSE_BRACES subqueryname      	{ $$ = SubquerySemanticAction($4, $2); }
