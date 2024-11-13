@@ -48,6 +48,11 @@ Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerCon
 	return token;
 }
 
+Token MetatagSeparatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext){
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	return METATAG_SEPARATOR;
+}
+
 Token MetatagStringLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, MetatagType metatag) {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->metatype = metatag;

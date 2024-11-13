@@ -87,20 +87,30 @@ void releaseOrdertypenode(Ordertypenode * ordertypenode) {
 void releaseExpression(Expression * expression) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (expression != NULL) {
-		switch (expression->type) {
-			case OPAND:
-			case OPOR:
-				releaseExpression(expression->leftExpression);
-				releaseExpression(expression->rightExpression);
-				break;
-			case OPNOT:
-				releaseExpression(expression->singleExpression);
-				break;
-			case FACTOR:
-				releaseFactor(expression->factor);
-				break;
+		if (expression->next){
+			releaseExpression(expression->next);
 		}
+		releaseTerm(expression->term);
 		free(expression);
+	}
+}
+
+void releaseTerm(Term * term) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (term != NULL) {
+		if (term->next){
+			releaseTerm(term->next);
+		}
+		releaseBase(term->base);
+		free(term);
+	}
+}
+
+void releaseBase(Base * base) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (base != NULL) {
+		releaseFactor(base->factor);
+		free(base);
 	}
 }
 

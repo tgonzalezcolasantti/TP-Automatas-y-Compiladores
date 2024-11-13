@@ -17,7 +17,7 @@ boolean isSubquery = false;
  */
 %s SUBQUERY
 %x SUBQUERYEND
-%x METATAG_ARG
+%s METATAG_ARG
 
 /**
  * Reusable patterns.
@@ -25,10 +25,11 @@ boolean isSubquery = false;
  * @see https://westes.github.io/flex/manual/Matching.html
  * @see https://westes.github.io/flex/manual/Patterns.html
  */
-STRING                  [[:alnum:]]([[:alnum:]]|"-"|"_"|"/"|"("|")")*
+STRING                  [[:alnum:]]+([[:alnum:]]|"-"|"_"|"/"|"("|")")*
 INT                     [[:digit:]]+
 DATE                    [0-9]{4}"-"("0"[1-9]|"1"[0-2])"-"("0"[1-9]|[1-2][0-9]|"3"[0-1])
-DATETIME                {DATE}"T"([0-1][0-9]|"2"[0-3])":"([0-5][0-9])":"([0-5][0-9])"Z"
+TIME                    ([0-1][0-9]|"2"[0-3])":"([0-5][0-9])":"([0-5][0-9])
+DATETIME                {DATE}"T"{TIME}"Z"
 SIZEQUANT               ("B"|"KiB"|"MiB"|"GiB")
 DESCENDORDER            "_desc"
 SPACER                  ([[:blank:]]|\n)
@@ -44,28 +45,12 @@ METATAG_RECALL          "recall"
 %%
 
 
-"("{SPACER}*    					        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
-{SPACER}*")"						        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
-<INITIAL>"{"{SPACER}*                       { BEGIN(SUBQUERY); isSubquery = true; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
-<SUBQUERY>{SPACER}*"}"                      { BEGIN(SUBQUERYEND); isSubquery = false; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
-<SUBQUERYEND>{STRING}                       { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
-<SUBQUERYEND>{SPACER}+                      { BEGIN(INITIAL); IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+"("             					        { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_PARENTHESIS); }
+")"						                    { return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
+<INITIAL>"{"                                { BEGIN(SUBQUERY); isSubquery = true; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACES); }
+<SUBQUERY>"}"                               { BEGIN(SUBQUERYEND); isSubquery = false; return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACES); }
+<SUBQUERYEND>{STRING}                       { BEGIN(INITIAL); return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 
-"name"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), NAME); }
-"createdby"                                 { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), CREATED_BY); }
-"editedby"                                  { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), EDITED_BY); }
-"lasteditedby"                              { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), LASTEDITED_BY); }
-"likedby"                                   { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), LIKED_BY); }
-"type"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), FILE_TYPE); }
-"pool"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), POOL); }
-"likes"                                     { BEGIN(METATAG_ARG); return MetatagIntegerLexemeAction(createLexicalAnalyzerContext(), LIKES_AMOUNT); }
-"views"                                     { BEGIN(METATAG_ARG); return MetatagIntegerLexemeAction(createLexicalAnalyzerContext(), VIEWS_AMOUNT); }
-"createdon"                                 { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), CREATED_ON); }
-"editedon"                                  { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), EDITED_ON); }
-"lasteditedon"                              { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), LASTEDITED_ON); }
-{METATAG_SIZE}                              { BEGIN(METATAG_ARG); return MetatagSizeLexemeAction(createLexicalAnalyzerContext()); }
-{METATAG_ORDER}                             { BEGIN(METATAG_ARG); return MetatagOrderLexemeAction(createLexicalAnalyzerContext()); }
-{METATAG_RECALL}                            { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
 {RANGE}                                     { BEGIN(METATAG_ARG); return MetaparameterRangeLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>">"                            { return MetaparameterQuantifierLexemeAction(createLexicalAnalyzerContext(), GREATERTHAN); }
@@ -86,22 +71,37 @@ METATAG_RECALL          "recall"
 <METATAG_ARG>"MiB"                          { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), MIB); }
 <METATAG_ARG>"GiB"                          { END_METATAG_CONTEXT; return MetaparameterSizeQuantifierLexemeAction(createLexicalAnalyzerContext(), GIB); }
 
-
 <METATAG_ARG>{INT}                          { END_METATAG_CONTEXT; return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{DATETIME}                     { END_METATAG_CONTEXT; return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), true); }
 <METATAG_ARG>{DATE}                         { END_METATAG_CONTEXT; return MetaparameterDatetimeLexemeAction(createLexicalAnalyzerContext(), false); }
 <METATAG_ARG>{INT}/{SIZEQUANT}              { return MetaparameterIntegerLexemeAction(createLexicalAnalyzerContext()); }
 <METATAG_ARG>{STRING}                       { END_METATAG_CONTEXT; return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), false); }
 <METATAG_ARG>{WILDSTRING}                   { END_METATAG_CONTEXT; return MetaparameterStringLexemeAction(createLexicalAnalyzerContext(), true); }
+{METATAG_SEPARATOR}                         { return MetatagSeparatorLexemeAction(createLexicalAnalyzerContext()); }
+
+"name"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), NAME); }
+"createdby"                                 { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), CREATED_BY); }
+"editedby"                                  { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), EDITED_BY); }
+"lasteditedby"                              { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), LASTEDITED_BY); }
+"likedby"                                   { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), LIKED_BY); }
+"type"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), FILE_TYPE); }
+"pool"                                      { BEGIN(METATAG_ARG); return MetatagStringLexemeAction(createLexicalAnalyzerContext(), POOL); }
+"likes"                                     { BEGIN(METATAG_ARG); return MetatagIntegerLexemeAction(createLexicalAnalyzerContext(), LIKES_AMOUNT); }
+"views"                                     { BEGIN(METATAG_ARG); return MetatagIntegerLexemeAction(createLexicalAnalyzerContext(), VIEWS_AMOUNT); }
+"createdon"                                 { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), CREATED_ON); }
+"editedon"                                  { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), EDITED_ON); }
+"lasteditedon"                              { BEGIN(METATAG_ARG); return MetatagDateLexemeAction(createLexicalAnalyzerContext(), LASTEDITED_ON); }
+{METATAG_SIZE}                              { BEGIN(METATAG_ARG); return MetatagSizeLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_ORDER}                             { BEGIN(METATAG_ARG); return MetatagOrderLexemeAction(createLexicalAnalyzerContext()); }
+{METATAG_RECALL}                            { BEGIN(METATAG_ARG); return MetatagRecallLexemeAction(createLexicalAnalyzerContext()); }
 
 {STRING}                                    { return StringLexemeAction(createLexicalAnalyzerContext(), false); }
 {WILDSTRING}                                { return StringLexemeAction(createLexicalAnalyzerContext(), true); }
 
-{SPACER}+/({WILDSTRING}|"("|"!")            { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), AND); }
-"|"{SPACER}+                                { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), OR); }
+"|"                                         { return BinaryOperatorLexemeAction(createLexicalAnalyzerContext(), OR); }
 "!"                                         { return NOTOperatorLexemeAction(createLexicalAnalyzerContext()); }
 
-{SPACER}+|{METATAG_SEPARATOR}               { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
+{SPACER}+                                   { IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
 .									        { return UnknownLexemeAction(createLexicalAnalyzerContext()); }
 %%

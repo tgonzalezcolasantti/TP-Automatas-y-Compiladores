@@ -24,6 +24,10 @@ static void _generateConstantString(const unsigned int indentationLevel, char * 
 static void _generateConstantInteger(const unsigned int indentationLevel, int constant);
 static void _generateEpilogue(void);
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);
+static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);
+static void _generateTerm(const unsigned int indentationLevel, Term * term);
+static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);
+static void _generateBase(const unsigned int indentationLevel, Base * base);
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
 static void _generateTag(const unsigned int indentationLevel, Tag * t);
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);
@@ -102,24 +106,50 @@ static void _generateEpilogue(void) {
  */
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
 	_output(indentationLevel, "%s", "[ $E$, circle, draw, black!20\n");
-	switch (expression->type) {
-		case OPAND:
-		case OPOR:
-			_generateExpression(1 + indentationLevel, expression->leftExpression);
-			_output(1 + indentationLevel, "%s%c%s", "[ $", _expressionTypeToCharacter(expression->type), "$, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, expression->rightExpression);
-			break;
-		case OPNOT:
-			_output(1 + indentationLevel, "%s%c%s", "[ $", _expressionTypeToCharacter(expression->type), "$, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, expression->singleExpression);
-			break;
-		case FACTOR:
-			_generateFactor(1 + indentationLevel, expression->factor);
-			break;
-		default:
-			logError(_logger, "The specified expression type is unknown: %d", expression->type);
-			break;
+	_generateExpressionRecursive(indentationLevel, expression);
+	_output(indentationLevel, "%s", "]\n");
+}
+
+/**
+ * Generates the innards of an expression.
+ */
+static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression) {
+	_generateTerm(indentationLevel + 1, expression->term);
+	if (expression->next) {
+		_output(1 + indentationLevel, "[ $OR$, circle, draw, purple ]\n");
+		_generateExpressionRecursive(indentationLevel, expression->next);
 	}
+}
+
+/**
+ * Generates the output of a term.
+ */
+static void _generateTerm(const unsigned int indentationLevel, Term * term) {
+	_output(indentationLevel, "%s", "[ $T$, circle, draw, black!20\n");
+	_generateTermRecursive(indentationLevel, term);
+	_output(indentationLevel, "%s", "]\n");
+}
+
+/**
+ * Generates the innards of a term.
+ */
+static void _generateTermRecursive(const unsigned int indentationLevel, Term * term) {
+	_generateBase(indentationLevel + 1, term->base);
+	if (term->next) {
+		_output(1 + indentationLevel, "[ $AND$, circle, draw, purple ]\n");
+		_generateTermRecursive(indentationLevel, term->next);
+	}
+}
+
+/**
+ * Generates the output of a base.
+ */
+static void _generateBase(const unsigned int indentationLevel, Base * base) {
+	_output(indentationLevel, "%s", "[ $B$, circle, draw, black!20\n");
+	if (base->negated) {
+		_output(1 + indentationLevel, "[ $NOT$, circle, draw, purple ]\n");
+	}
+	_generateFactor(indentationLevel + 1, base->factor);
 	_output(indentationLevel, "%s", "]\n");
 }
 
@@ -151,7 +181,7 @@ static void _generateFactor(const unsigned int indentationLevel, Factor * factor
  * Generates the output of a tag element.
  */
 static void _generateTag(const unsigned int indentationLevel, Tag * t) {
-	_output(indentationLevel, "%s", "[ $T$, circle, draw, cyan\n");
+	_output(indentationLevel, "%s", "[ $TG$, circle, draw, cyan\n");
 	if (t->tagname)
 		_generateString(indentationLevel + 1, t->tagname);
 	_output(indentationLevel, "%s", "]\n");

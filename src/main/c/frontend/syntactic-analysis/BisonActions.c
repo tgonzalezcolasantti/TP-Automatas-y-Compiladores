@@ -154,31 +154,29 @@ Ordertypenode * OrdertypeSemanticAction(OrderType order) {
 }
 
 
-Expression * BinaryExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type) {
+Expression * ExpressionSemanticAction(Term * term, Expression * next) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Expression * exp = calloc(1, sizeof(Expression));
-	exp->leftExpression = leftExpression;
-	exp->rightExpression = rightExpression;
-	exp->type = type;
+	exp->term = term;
+	exp->next = next;
 	return exp;
 }
 
-Expression * NegatedExpressionSemanticAction(Expression * expression) {
+Term * TermSemanticAction(Base * base, Term * next) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * exp = calloc(1, sizeof(Expression));
-	exp->singleExpression = expression;
-	exp->type = OPNOT;
-	return exp;
+	Term * term = calloc(1, sizeof(Term));
+	term->base = base;
+	term->next = next;
+	return term;
 }
 
-Expression * FactorExpressionSemanticAction(Factor * factor) {
+Base * BaseSemanticAction(Factor * factor, boolean negated) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Expression * exp = calloc(1, sizeof(Expression));
-	exp->factor = factor;
-	exp->type = FACTOR;
-	return exp;
+	Base * base = calloc(1, sizeof(Base));
+	base->factor = factor;
+	base->negated = negated;
+	return base;
 }
-
 
 Factor * ExpressionFactorSemanticAction(Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);

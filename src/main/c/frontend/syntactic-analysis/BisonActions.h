@@ -36,9 +36,10 @@ Metaorder * MetaorderSemanticAction(Ordertypenode * order, boolean descending);
 
 Ordertypenode * OrdertypeSemanticAction(OrderType order);
 
-Expression * BinaryExpressionSemanticAction(Expression * leftExpression, Expression * rightExpression, ExpressionType type);
-Expression * NegatedExpressionSemanticAction(Expression * expression);
-Expression * FactorExpressionSemanticAction(Factor * factor);
+Expression * ExpressionSemanticAction(Term * term, Expression * expression);
+
+Term * TermSemanticAction(Base * base, Term * term);
+Base * BaseSemanticAction(Factor * factor, boolean negated);
 
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 Factor * TagFactorSemanticAction(Tag * tag);

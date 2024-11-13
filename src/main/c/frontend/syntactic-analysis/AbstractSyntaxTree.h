@@ -25,10 +25,10 @@ typedef enum MatchType MatchType;
 typedef enum SizeType SizeType;
 
 
-
-
 typedef struct Program Program;
 typedef struct Expression Expression;
+typedef struct Term Term;
+typedef struct Base Base;
 typedef struct Factor Factor;
 typedef struct Query Query;
 typedef struct Subqueries Subqueries;
@@ -153,15 +153,18 @@ struct Ordertypenode{
 };
 
 struct Expression {
-	union {
-		Factor * factor;
-		struct {
-			Expression * leftExpression;
-			Expression * rightExpression;
-		};
-		Expression * singleExpression;
-	};
-	ExpressionType type;
+	Term * term;
+	Expression * next;
+};
+
+struct Term {
+	Base * base;
+	Term * next;
+};
+
+struct Base {
+	Factor * factor;
+	boolean negated;
 };
 
 struct Factor {
@@ -250,6 +253,8 @@ void releaseSubqueryname(Subqueryname * subqueryname);
 void releaseMetaorder(Metaorder * metaorder);
 void releaseOrdertypenode(Ordertypenode * ordertypenode);
 void releaseExpression(Expression * expression);
+void releaseTerm(Term * term);
+void releaseBase(Base * base);
 void releaseFactor(Factor * factor);
 void releaseTag(Tag * tag);
 void releaseMetatag(Metatag * metatag);

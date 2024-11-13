@@ -47,7 +47,7 @@ const int main(const int count, const char ** arguments) {
 		//if (computationResult.succeed) {
 		if (true) {
 			//compilerState.value = computationResult.value;
-			generateAST(&compilerState);
+			//generateAST(&compilerState);
 			generateSQL(&compilerState);
 		}
 		else {

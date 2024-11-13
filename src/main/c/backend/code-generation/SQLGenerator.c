@@ -19,10 +19,13 @@ void shutdownSQLGeneratorModule() {
 
 /** PRIVATE FUNCTIONS */
 
-static const char * _expressionTypeToOperator(const ExpressionType type);
 static void _generateConstantString(char * constant);												//OK
 static void _generateEpilogue(void);																//OK
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
+static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);
+static void _generateTerm(const unsigned int indentationLevel, Term * term);						//OK
+static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);
+static void _generateBase(const unsigned int indentationLevel, Base * base);				
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
 static void _generateTag(const unsigned int indentationLevel, Tag * t);								//OK
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						//OK (EXCEPT RECALL)
@@ -42,21 +45,6 @@ static void _generatePrologue(void);																//OK
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
 static int _sizetobytes(int size, SizeType type);
-
-/**
- * Converts and expression type to its proper SQL operator
- * or returns "F" if that's not possible.
- */
-static const char * _expressionTypeToOperator(const ExpressionType type) {
-	switch (type) {
-		case OPAND: return "AND";
-		case OPOR: return "OR";
-		case OPNOT: return "NOT";
-		default:
-			logError(_logger, "The specified expression type cannot be converted into an operator: %d", type);
-			return "F";
-	}
-}
 
 static int _sizetobytes(int size, SizeType type){
 	switch (type) {
@@ -96,33 +84,66 @@ static void _generateEpilogue(void) {
  * Generates the output of an expression.
  */
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression) {
-	if (expression->type == OPNOT) {
-		_output(0, "NOT ");
+	if (expression->next){
+		_output(0, "EXISTS(\n");
+		_output(indentationLevel + 1, "%s%d%s", "SELECT * FROM file AS file", idcounter++, "\n");
+		_output(indentationLevel + 1, "WHERE ");
+		_generateExpressionRecursive(indentationLevel, expression);
+		_output(indentationLevel, ")");
 	} else {
+		_generateTerm(indentationLevel, expression->term);
 	}
-	switch (expression->type) {
-		case FACTOR:
-			_generateFactor(indentationLevel, expression->factor);
-			break;
-		case OPAND:
-		case OPOR:
-			_output(0, "EXISTS(\n");
-			_output(indentationLevel + 1, "%s%d%s", "SELECT * FROM file AS file", idcounter++, "\n");
-			_output(indentationLevel + 1, "WHERE ");
-			_generateExpression(1 + indentationLevel, expression->leftExpression);
-			_output(0, "\n");
-			_output(indentationLevel + 1, "%s ", _expressionTypeToOperator(expression->type));
-			_generateExpression(1 + indentationLevel, expression->rightExpression);
-			_output(0, "\n");
-			_output(indentationLevel, ")");
-			break;
-		case OPNOT:
-			_generateExpression(indentationLevel, expression->singleExpression);
-			break;
-		default:
-			logError(_logger, "The specified expression type is unknown: %d", expression->type);
-			break;
+}
+
+/**
+ * Generates the innards of an expression.
+ */
+static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression) {
+	_generateTerm(1 + indentationLevel, expression->term);
+	if (expression->next) {
+		_output(0, " OR ");
+		_generateExpressionRecursive(indentationLevel, expression->next);
+	} else {
+		_output(0, "\n");
 	}
+}
+
+/**
+ * Generates the output of a term.
+ */
+static void _generateTerm(const unsigned int indentationLevel, Term * term) {
+	if (term->next) {
+		_output(0, "EXISTS(\n");
+		_output(indentationLevel + 1, "%s%d%s", "SELECT * FROM file AS file", idcounter++, "\n");
+		_output(indentationLevel + 1, "WHERE ");
+		_generateTermRecursive(indentationLevel, term);
+		_output(indentationLevel, ") ");
+	} else {
+		_generateBase(indentationLevel, term->base);
+	}
+}
+
+/**
+ * Generates the innards of a term.
+ */
+static void _generateTermRecursive(const unsigned int indentationLevel, Term * term) {
+	_generateBase(1 + indentationLevel, term->base);
+	if (term->next) {
+		_output(0, " AND ");
+		_generateTermRecursive(indentationLevel, term->next);
+	} else {
+		_output(0, "\n");
+	}
+}
+
+/**
+ * Generates the output of a base.
+ */
+static void _generateBase(const unsigned int indentationLevel, Base * base) {
+	if (base->negated){
+		_output(0, "NOT ");
+	}
+	_generateFactor(indentationLevel, base->factor);
 }
 
 /**
