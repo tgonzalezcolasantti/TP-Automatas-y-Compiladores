@@ -158,7 +158,6 @@ void releaseMetatag(Metatag * metatag){
 				releaseSemanticSize(metatag->size);
 				break;
 		}		
-		free(metatag->metatagname);
 		free(metatag);
 	}
 }

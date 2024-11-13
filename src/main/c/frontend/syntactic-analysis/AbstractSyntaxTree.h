@@ -14,7 +14,6 @@ void shutdownAbstractSyntaxTreeModule();
  * These typedefs allows self-referencing types.
  */
 
-typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
@@ -50,13 +49,6 @@ typedef struct Tag Tag;
 enum MatchType {
 	REGULAR,
 	LIKE
-};
-
-enum ExpressionType {
-	OPAND,
-	OPOR,
-	OPNOT,
-	FACTOR
 };
 
 enum OrderType {
@@ -181,7 +173,6 @@ struct Tag {
 };
 
 struct Metatag {
-	char * metatagname;
 	union {
 		String * string;
 		Integer * integer;

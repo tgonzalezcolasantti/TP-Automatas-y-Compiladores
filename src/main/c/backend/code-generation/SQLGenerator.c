@@ -262,7 +262,7 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			break;
 		case METARECALL:
 		default:
-			logError(_logger, "The specified metatag cannot be converted into a query: %s", m->metatagname);
+			logError(_logger, "The specified metatag cannot be converted into a query");
 			_output(indentationLevel, "SELECT * FROM file\n");
 	}	
 	idcounter++;

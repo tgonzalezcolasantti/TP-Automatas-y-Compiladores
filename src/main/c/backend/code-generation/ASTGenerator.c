@@ -18,7 +18,6 @@ void shutdownASTGeneratorModule() {
 
 /** PRIVATE FUNCTIONS */
 
-static const char _expressionTypeToCharacter(const ExpressionType type);
 static const char * _sizeTypeToSize(SizeType s);
 static void _generateConstantString(const unsigned int indentationLevel, char * constant);
 static void _generateConstantInteger(const unsigned int indentationLevel, int constant);
@@ -46,21 +45,6 @@ static void _generateString(const unsigned int indentationLevel, String * s);
 static void _generatePrologue(void);
 static char * _indentation(const unsigned int indentationLevel);
 static void _output(const unsigned int indentationLevel, const char * const format, ...);
-
-/**
- * Converts and expression type to the proper character of the operation
- * involved, or returns '\0' if that's not possible.
- */
-static const char _expressionTypeToCharacter(const ExpressionType type) {
-	switch (type) {
-		case OPAND: return '+';
-		case OPOR: return '|';
-		case OPNOT: return '!';
-		default:
-			logError(_logger, "The specified expression type cannot be converted into character: %d", type);
-			return '\0';
-	}
-}
 
 static const char * _sizeTypeToSize(SizeType s){
 	switch (s){
@@ -192,7 +176,50 @@ static void _generateTag(const unsigned int indentationLevel, Tag * t) {
  */
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 	_output(indentationLevel, "%s", "[ $M$, circle, draw, brown\n");
-	_generateConstantString(indentationLevel + 1, m->metatagname);
+	switch(m->metatag) {
+		case NAME:
+			_generateConstantString(indentationLevel + 1, "file name");
+			break;
+		case CREATED_ON:
+			_generateConstantString(indentationLevel + 1, "created on");
+			break;
+		case CREATED_BY:
+			_generateConstantString(indentationLevel + 1, "created by");
+			break;
+		case EDITED_BY:
+			_generateConstantString(indentationLevel + 1, "edited by");
+			break;
+		case EDITED_ON:
+			_generateConstantString(indentationLevel + 1, "edited on");
+			break;		
+		case LASTEDITED_BY:
+			_generateConstantString(indentationLevel + 1, "last edited by");
+			break;
+		case LASTEDITED_ON:
+			_generateConstantString(indentationLevel + 1, "last edited on");
+			break;		
+		case LIKED_BY:
+			_generateConstantString(indentationLevel + 1, "liked by");
+			break;
+		case LIKES_AMOUNT:
+			_generateConstantString(indentationLevel + 1, "likes");
+			break;
+		case FILE_TYPE:
+			_generateConstantString(indentationLevel + 1, "file type");
+			break;
+		case FILE_SIZE:
+			_generateConstantString(indentationLevel + 1, "file size");
+			break;		
+		case VIEWS_AMOUNT:
+			_generateConstantString(indentationLevel + 1, "views");
+			break;
+		case POOL:
+			_generateConstantString(indentationLevel + 1, "pool");
+			break;		
+		case METARECALL:
+			_generateConstantString(indentationLevel + 1, "recall");
+			break;
+	}
 	switch(m->type) {
 		case TYPESTRING:
 		case TYPERECALL:
