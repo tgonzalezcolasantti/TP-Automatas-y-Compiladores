@@ -8,10 +8,12 @@
 typedef enum SymbolType SymbolType;
 
 typedef struct Symbol Symbol;
+typedef struct Scope Scope;
 
 enum SymbolType{
-    PREDICATE,
-    BASE
+    SYMBOL_PREDICATE,
+    SYMBOL_TAG,
+    SYMBOL_METATAG
 };
 
 struct Symbol{
@@ -19,18 +21,35 @@ struct Symbol{
     int scope;
     union{
         Subquery * predicate;
-        Base * base;
+        struct {
+            boolean negated;
+            char * name;
+            MetatagType metatag;
+            FieldType quant;
+        };
     };
     Symbol * next;
+};
+
+struct Scope {
+    int scope;
+    Scope * next;
+    Scope * prev;
 };
 
 void initializeSymbolModule();
 void shutdownSymbolModule();
 
 boolean addPredicate(Subquery * predicate);
-boolean addBase(Base * base, boolean negated, int scope);
+boolean addBase(Base * base, int scope);
 
 Expression * getPredicate(char * name);
+
+void pushScope(const unsigned int scope);
+int popScope();
+int peekScope();
+int findScope(unsigned int scope);
+
 
 
 #endif

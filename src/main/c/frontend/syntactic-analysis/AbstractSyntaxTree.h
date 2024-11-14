@@ -68,7 +68,8 @@ enum FactorType {
 
 enum FieldType {
 	RANGED,
-	UNDEFINEDRANGED
+	UNDEFINEDRANGED,
+	MATCH
 };
 
 enum MetaType {
