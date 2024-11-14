@@ -59,6 +59,8 @@ add_executable(Compiler
 	src/main/c/backend/code-generation/ASTGenerator.c
 	src/main/c/backend/code-generation/SQLGenerator.c
 	#src/main/c/backend/domain-specific/Calculator.c
+	src/main/c/backend/domain-specific/Symbol.c
+	src/main/c/backend/domain-specific/SemanticAnalyzer.c
 	src/main/c/EntryPoint.c
 	src/main/c/frontend/lexical-analysis/FlexActions.c
 	src/main/c/frontend/lexical-analysis/FlexScanner.c

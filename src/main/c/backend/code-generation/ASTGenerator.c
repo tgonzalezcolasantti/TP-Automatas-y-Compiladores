@@ -272,8 +272,8 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s) {
 	_output(indentationLevel, "%s", "[ $S$, circle, draw, orange\n");
 	_generateSubquery(indentationLevel + 1, s->subquery);
-	if (s->subqueries) {
-		_generateSubqueries(indentationLevel + 1, s->subqueries);
+	if (s->next) {
+		_generateSubqueries(indentationLevel + 1, s->next);
 	}
 	_output(indentationLevel, "%s", "]\n");
 }

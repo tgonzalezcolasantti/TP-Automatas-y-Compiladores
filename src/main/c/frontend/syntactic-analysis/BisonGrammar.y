@@ -170,7 +170,7 @@ string: STRING														{ $$ = StringSemanticAction($1, false); }
 	| STRMATCH														{ $$ = StringSemanticAction($1, true); }
 	;
 
-integer: INTEGER													{ $$ = IntegerSemanticAction($1); }
+integer: INTEGER													{ $$ = UndefinedRangeIntegerSemanticAction(EQUALS, $1); }
 	| INTEGER RANGE INTEGER											{ $$ = RangedIntegerSemanticAction($1, $3); }
 	| QUANTIFIER INTEGER											{ $$ = UndefinedRangeIntegerSemanticAction($1, $2); }
 	;

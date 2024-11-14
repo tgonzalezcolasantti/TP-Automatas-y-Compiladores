@@ -123,7 +123,7 @@ struct Query {
 
 struct Subqueries {
 	Subquery * subquery;
-	Subqueries * subqueries;
+	Subqueries * next;
 };
 
 struct Subquery {

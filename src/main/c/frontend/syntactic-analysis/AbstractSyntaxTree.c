@@ -45,8 +45,8 @@ void releaseSubqueries(Subqueries * subqueries) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (subqueries != NULL) {
 		releaseSubquery(subqueries->subquery);
-		if (subqueries->subqueries){
-			releaseSubqueries(subqueries->subqueries);
+		if (subqueries->next){
+			releaseSubqueries(subqueries->next);
 		}		
 		free(subqueries);
 	}

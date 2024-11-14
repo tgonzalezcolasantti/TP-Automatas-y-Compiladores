@@ -115,7 +115,7 @@ Subqueries * SubqueryRecursiveSemanticAction(Subquery * subquery, Subqueries * r
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Subqueries * subqueries = calloc(1, sizeof(Subqueries));
 	subqueries->subquery = subquery;
-	subqueries->subqueries = remaining;
+	subqueries->next = remaining;
 	return subqueries;
 }
 

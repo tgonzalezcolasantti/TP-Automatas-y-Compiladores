@@ -1,6 +1,8 @@
 #include "backend/code-generation/ASTGenerator.h"
 #include "backend/code-generation/SQLGenerator.h"
 //#include "backend/domain-specific/Calculator.h"
+#include "backend/domain-specific/SemanticAnalyzer.h"
+#include "backend/domain-specific/Symbol.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
@@ -22,6 +24,8 @@ const int main(const int count, const char ** arguments) {
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
 	//initializeCalculatorModule();
+	initializeSymbolModule();
+	initializeSemanticAnalyzerModule();
 	initializeASTGeneratorModule();
 	initializeSQLGeneratorModule();
 
@@ -42,11 +46,7 @@ const int main(const int count, const char ** arguments) {
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Computing expression value...");
-		Program * program = compilerState.abstractSyntaxtTree;
-		//ComputationResult computationResult = computeExpression(program->expression);
-		//if (computationResult.succeed) {
-		if (true) {
-			//compilerState.value = computationResult.value;
+		if (validateAST(compilerState.abstractSyntaxtTree)) {
 			generateAST(&compilerState);
 			generateSQL(&compilerState);
 		}
@@ -57,7 +57,7 @@ const int main(const int count, const char ** arguments) {
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 		logDebugging(logger, "Releasing AST resources...");
-		releaseProgram(program);
+		releaseProgram(compilerState.abstractSyntaxtTree);
 	}
 	else {
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
@@ -67,6 +67,8 @@ const int main(const int count, const char ** arguments) {
 	logDebugging(logger, "Releasing modules resources...");
 	shutdownASTGeneratorModule();
 	shutdownSQLGeneratorModule();
+	shutdownSemanticAnalyzerModule();
+	shutdownSymbolModule();
 	//shutdownCalculatorModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();

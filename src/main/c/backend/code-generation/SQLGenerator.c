@@ -1,4 +1,5 @@
 #include "SQLGenerator.h"
+#include "../domain-specific/Symbol.h"
 
 /* MODULE INTERNAL STATE */
 
@@ -261,14 +262,18 @@ static void _generateMetatag(const unsigned int indentationLevel, Metatag * m) {
 			_output(indentationLevel, "WHERE file%d.fileID=file.fileID AND pool%d.poolname", idcounter, idcounter);
 			break;
 		case METARECALL:
+			_output(indentationLevel, "SELECT file%d.fileID FROM file AS file%d\n", idcounter, idcounter);
+			_output(indentationLevel, "WHERE ");
+			break;
 		default:
 			logError(_logger, "The specified metatag cannot be converted into a query");
 			_output(indentationLevel, "SELECT * FROM file\n");
 	}	
 	idcounter++;
 	switch(m->type) {
-		case TYPESTRING:
 		case TYPERECALL:
+			_generateExpression(indentationLevel, getPredicate(m->string->string));
+		case TYPESTRING:
 			_generateString(m->string);
 			break;
 		case TYPEINTEGER:
@@ -314,8 +319,8 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s) {
 	_output(indentationLevel, "%s", "[ $S$, circle, draw, orange\n");
 	_generateSubquery(indentationLevel + 1, s->subquery);
-	if (s->subqueries) {
-		_generateSubqueries(indentationLevel + 1, s->subqueries);
+	if (s->next) {
+		_generateSubqueries(indentationLevel + 1, s->next);
 	}
 	_output(indentationLevel, "%s", "]\n");
 }
