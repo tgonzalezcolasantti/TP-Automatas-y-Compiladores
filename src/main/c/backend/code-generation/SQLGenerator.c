@@ -5,7 +5,8 @@
 
 const static char _indentationCharacter = ' ';
 const static char _indentationSize = 4;
-static int idcounter = 0;
+static boolean droppedGroupBy = false; 
+static unsigned int idcounter = 0;
 static Logger * _logger = NULL;
 
 void initializeSQLGeneratorModule() {
@@ -22,6 +23,7 @@ void shutdownSQLGeneratorModule() {
 
 static void _generateConstantString(char * constant);												//OK
 static void _generateEpilogue(void);																//OK
+static void _generateOrderBy(void);																//OK
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
 static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);
 static void _generateTerm(const unsigned int indentationLevel, Term * term);						//OK
@@ -74,10 +76,20 @@ static void _generateConstantString(char * constant) {
 }
 
 /**
+ * Adds a required GROUP BY SQL statement, which must be placed after queries but before order
+ */
+static void _generateGroupBy(void){
+	if (!droppedGroupBy++) {
+		_output(0, "GROUP BY file.fileID, filename, creator, created_on, type, size, views, likes, last_edited_on, last_edited_by\n");
+	}
+}
+
+/**
  * Creates the epilogue of the generated output, that is, the final semicolon that
  * completes a proper SQL statement.
  */
 static void _generateEpilogue(void) {
+	_generateGroupBy();
 	_output(0, "%s",";\n");
 }
 
@@ -314,40 +326,10 @@ static void _generateQuery(const unsigned int indentationLevel, Query * q) {
 }
 
 /**
- * Generates the output of a subquery group.
- */
-static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s) {
-	_output(indentationLevel, "%s", "[ $S$, circle, draw, orange\n");
-	_generateSubquery(indentationLevel + 1, s->subquery);
-	if (s->next) {
-		_generateSubqueries(indentationLevel + 1, s->next);
-	}
-	_output(indentationLevel, "%s", "]\n");
-}
-
-/**
- * Generates the output of a subquery.
- */
-static void _generateSubquery(const unsigned int indentationLevel, Subquery * s) {
-	_output(indentationLevel, "%s", "[ $sub$, circle, draw, magenta\n");
-	_generateExpression(indentationLevel + 1, s->expression);
-	_generateSubqueryName(indentationLevel + 1, s->name);
-	_output(indentationLevel, "%s", "]\n");
-}
-
-/**
- * Generates the output of a subquery name.
- */
-static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n) {
-	_output(indentationLevel, "%s", "[ $N$, circle, draw, magenta\n");
-	_generateConstantString(n->name);
-	_output(indentationLevel, "%s", "]\n");
-}
-
-/**
  * Generates the output of a metaorder tag.
  */
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m) {
+	_generateGroupBy();
 	_output(indentationLevel, "%s", "\nORDER BY ");
 	_generateOrderType(m->order);
 	_output(0, "%s\n", (m->desc) ? "DESC" : "");
@@ -405,11 +387,11 @@ static void _generateDate(Date * d) {
 		 if (d->hasTime){
 			_output(0, " ");
 			_generateQuantifier(d->quantifier);
-			_output(0, " DATE '%s'", d->date);
+			_output(0, " TIMESTAMP '%s'", d->date);
 		 } else {
 			_output(0, "::DATE ");
 			_generateQuantifier(d->quantifier);
-			_output(0, " TIMESTAMP '%s'", d->date);
+			_output(0, " DATE '%s'", d->date);
 		 }
 	}
 }
@@ -463,17 +445,18 @@ static void _generateQuantifier(QuantifierType q) {
  * It will later have restrictions applied based on the given query
  */
 static void _generatePrologue(void) {
-	_output(0, "%s", "SELECT file.fileID, filename, appuser.username AS creator, createdon AS created_on,\n"
+	_output(0, "%s", "SELECT file.fileID as ID, filename, appuser.username AS creator, createdon AS created_on,\n"
 	"    type, size, views, (\n"
 	"        SELECT COUNT(*) AS likes FROM favorite\n"
 	"        WHERE favorite.fileID=file.fileID\n"
-	"    ) AS likes, editiondate AS last_edited_on, lastEdition.username AS last_edited_by\n"
+	"    ) AS likes, editiondate AS last_edited_on, lastEdition.username AS last_edited_by, STRING_AGG(DISTINCT tagname, ', ') as tags\n"
 	"FROM file INNER JOIN appuser ON appuser.userID=file.createdby\n"
 	"    LEFT OUTER JOIN (\n"
 	"        SELECT DISTINCT ON (fileID) fileID, editiondate, username FROM edition NATURAL JOIN appuser\n"
 	"        ORDER BY fileID, editiondate DESC\n"
 	"    ) AS lastEdition\n"	
-	"    ON lastEdition.fileID=file.fileID\n");
+	"    ON lastEdition.fileID=file.fileID\n"
+	"	 LEFT OUTER JOIN filetag ON file.fileID=filetag.fileID NATURAL JOIN tag\n");
 }
 
 /**

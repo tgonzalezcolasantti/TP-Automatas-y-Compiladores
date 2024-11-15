@@ -47,7 +47,7 @@ const int main(const int count, const char ** arguments) {
 		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Computing expression value...");
 		if (validateAST(compilerState.abstractSyntaxtTree)) {
-			generateAST(&compilerState);
+			//generateAST(&compilerState);
 			generateSQL(&compilerState);
 		}
 		else {

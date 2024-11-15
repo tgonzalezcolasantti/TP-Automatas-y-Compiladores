@@ -30,7 +30,7 @@ static Subquery * _searchPredicate(char * name, Symbol * start);
 static void _printSymbolTable(Symbol * s);
 static void _printSymbolTableRecursive(Symbol * s);
 static boolean _addBaseRec(Base * base, unsigned int scope, Symbol * start);
-static boolean _checkDuplicateSymbol(Symbol * a, Symbol * b);
+static boolean _checkDuplicateSymbol(Symbol * new, Symbol * start);
 
 static Symbol * _getLastSymbol(Symbol * start) {
     if (!start){
