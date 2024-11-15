@@ -12,6 +12,11 @@ void initializeSymbolModule() {
 
 void shutdownSymbolModule() {
 	if (_logger != NULL) {
+        while (symbolRoot != NULL) {
+            Symbol * temp = symbolRoot;
+            symbolRoot = symbolRoot->next;
+            free(temp);
+        }
 		destroyLogger(_logger);
 	}
 }
@@ -162,7 +167,7 @@ static boolean _addBaseRec(Base * base, unsigned int scope, Symbol * start){
             return _addBaseRec(base, scope, start->next);
         }
     }
-    logCritical(_logger, "Duplicate symbol within scope found for");
+    logWarning(_logger, "Duplicate symbol within scope found for:");
     _printSymbolTableRecursive(new);
     _printSymbolTable(symbolRoot);
     _printScopeTable(scopeStack);
@@ -309,7 +314,6 @@ int popScope() {
 int peekScope() {
     Scope * last = _getLastScope(scopeStack);
     if (last == NULL) {
-        logCritical(_logger, "Attempted to peek an empty scope stack. That's bad, man.");
         return -1;
     } else {
         return last->scope;

@@ -78,8 +78,10 @@ boolean validateAST(Program * program) {
         if(_processSubqueries(program->query->subqueries) == false) {
             return false;
         } else {
-            return _validateExpression(program->query->mainQuery);
-            return true;
+            if (_validateExpression(program->query->mainQuery) && peekScope() == -1) {
+                return true;
+            }
+            return false;
         }
     }
 }
