@@ -23,20 +23,17 @@ void shutdownSQLGeneratorModule() {
 
 static void _generateConstantString(char * constant);												//OK
 static void _generateEpilogue(void);																//OK
-static void _generateOrderBy(void);																//OK
+static void _generateOrderBy(void);																	//OK
 static void _generateExpression(const unsigned int indentationLevel, Expression * expression);		//OK
-static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);
+static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);//OK
 static void _generateTerm(const unsigned int indentationLevel, Term * term);						//OK
-static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);
-static void _generateBase(const unsigned int indentationLevel, Base * base);				
+static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);				//OK
+static void _generateBase(const unsigned int indentationLevel, Base * base);						//OK
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
 static void _generateTag(const unsigned int indentationLevel, Tag * t);								//OK
-static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						//OK (EXCEPT RECALL)
+static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						//OK
 static void _generateProgram(Program * program);													//OK
-static void _generateQuery(const unsigned int indentationLevel, Query * q);							
-static void _generateSubqueries(const unsigned int indentationLevel, Subqueries * s);				
-static void _generateSubquery(const unsigned int indentationLevel, Subquery * s);					
-static void _generateSubqueryName(const unsigned int indentationLevel, Subqueryname * n);			
+static void _generateQuery(const unsigned int indentationLevel, Query * q);							//OK
 static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * m);					//OK
 static void _generateOrderType(Ordertypenode * o);													//OK
 static void _generateInteger(Integer * i);															//OK
