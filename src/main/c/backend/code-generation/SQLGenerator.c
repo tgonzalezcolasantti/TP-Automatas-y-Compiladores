@@ -77,7 +77,7 @@ static void _generateConstantString(char * constant) {
  */
 static void _generateGroupBy(void){
 	if (!droppedGroupBy++) {
-		_output(0, "GROUP BY file.fileID, filename, creator, created_on, type, size, views, likes, last_edited_on, last_edited_by\n");
+		_output(0, "\nGROUP BY file.fileID, filename, creator, created_on, type, size, views, likes, last_edited_on, last_edited_by");
 	}
 }
 
@@ -329,7 +329,7 @@ static void _generateMetaorder(const unsigned int indentationLevel, Metaorder * 
 	_generateGroupBy();
 	_output(indentationLevel, "%s", "\nORDER BY ");
 	_generateOrderType(m->order);
-	_output(0, "%s\n", (m->desc) ? "DESC" : "");
+	_output(0, "%s", (m->desc) ? "DESC" : "");
 }
 
 /**
