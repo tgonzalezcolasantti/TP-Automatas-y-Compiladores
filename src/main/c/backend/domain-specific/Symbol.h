@@ -41,7 +41,7 @@ void initializeSymbolModule();
 void shutdownSymbolModule();
 
 boolean addPredicate(Subquery * predicate);
-boolean addBase(Base * base, int scope);
+boolean addFactor(Factor * factor, int scope);
 
 Expression * getPredicate(char * name);
 

@@ -14,7 +14,7 @@ void shutdownAbstractSyntaxTreeModule();
  * These typedefs allows self-referencing types.
  */
 
-typedef enum FactorType FactorType;
+typedef enum ConstantType ConstantType;
 typedef enum OrderType OrderType;
 typedef enum FieldType FieldType;
 typedef enum MetaType MetaType;
@@ -27,8 +27,8 @@ typedef enum SizeType SizeType;
 typedef struct Program Program;
 typedef struct Expression Expression;
 typedef struct Term Term;
-typedef struct Base Base;
 typedef struct Factor Factor;
+typedef struct Constant Constant;
 typedef struct Query Query;
 typedef struct Subqueries Subqueries;
 typedef struct Subquery Subquery;
@@ -60,7 +60,7 @@ enum OrderType {
 	ORDER_RANDOM
 };
 
-enum FactorType {
+enum ConstantType {
 	TAG,
 	METATAG,
 	EXPRESSION
@@ -151,22 +151,22 @@ struct Expression {
 };
 
 struct Term {
-	Base * base;
+	Factor * factor;
 	Term * next;
 };
 
-struct Base {
-	Factor * factor;
+struct Factor {
+	Constant * constant;
 	boolean negated;
 };
 
-struct Factor {
+struct Constant {
 	union {
 		Tag * tag;
 		Metatag * metatag;
 		Expression * expression;
 	};
-	FactorType type;
+	ConstantType type;
 };
 
 struct Tag {
@@ -246,8 +246,8 @@ void releaseMetaorder(Metaorder * metaorder);
 void releaseOrdertypenode(Ordertypenode * ordertypenode);
 void releaseExpression(Expression * expression);
 void releaseTerm(Term * term);
-void releaseBase(Base * base);
 void releaseFactor(Factor * factor);
+void releaseConstant(Constant * constant);
 void releaseTag(Tag * tag);
 void releaseMetatag(Metatag * metatag);
 void releaseString(String * str);

@@ -38,12 +38,12 @@ Ordertypenode * OrdertypeSemanticAction(OrderType order);
 
 Expression * ExpressionSemanticAction(Term * term, Expression * expression);
 
-Term * TermSemanticAction(Base * base, Term * term);
-Base * BaseSemanticAction(Factor * factor, boolean negated);
+Term * TermSemanticAction(Factor * factor, Term * term);
+Factor * FactorSemanticAction(Constant * constant, boolean negated);
 
-Factor * ExpressionFactorSemanticAction(Expression * expression);
-Factor * TagFactorSemanticAction(Tag * tag);
-Factor * MetatagFactorSemanticAction(Metatag * metatag);
+Constant * ExpressionConstantSemanticAction(Expression * expression);
+Constant * TagConstantSemanticAction(Tag * tag);
+Constant * MetatagConstantSemanticAction(Metatag * metatag);
 
 Metatag * StringMetatagSemanticAction(MetatagType metatag, String * argument);
 Metatag * IntegerMetatagSemanticAction(MetatagType metatag, Integer * argument);

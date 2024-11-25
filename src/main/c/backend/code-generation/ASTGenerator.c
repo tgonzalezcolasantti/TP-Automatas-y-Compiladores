@@ -26,8 +26,8 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);
 static void _generateTerm(const unsigned int indentationLevel, Term * term);
 static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);
-static void _generateBase(const unsigned int indentationLevel, Base * base);
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor);
+static void _generateConstant(const unsigned int indentationLevel, Constant * constant);
 static void _generateTag(const unsigned int indentationLevel, Tag * t);
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);
 static void _generateProgram(Program * program);
@@ -118,7 +118,7 @@ static void _generateTerm(const unsigned int indentationLevel, Term * term) {
  * Generates the innards of a term.
  */
 static void _generateTermRecursive(const unsigned int indentationLevel, Term * term) {
-	_generateBase(indentationLevel + 1, term->base);
+	_generateFactor(indentationLevel + 1, term->factor);
 	if (term->next) {
 		_output(1 + indentationLevel, "[ $AND$, circle, draw, purple ]\n");
 		_generateTermRecursive(indentationLevel, term->next);
@@ -126,36 +126,36 @@ static void _generateTermRecursive(const unsigned int indentationLevel, Term * t
 }
 
 /**
- * Generates the output of a base.
- */
-static void _generateBase(const unsigned int indentationLevel, Base * base) {
-	_output(indentationLevel, "%s", "[ $B$, circle, draw, black!20\n");
-	if (base->negated) {
-		_output(1 + indentationLevel, "[ $NOT$, circle, draw, purple ]\n");
-	}
-	_generateFactor(indentationLevel + 1, base->factor);
-	_output(indentationLevel, "%s", "]\n");
-}
-
-/**
  * Generates the output of a factor.
  */
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
 	_output(indentationLevel, "%s", "[ $F$, circle, draw, black!20\n");
-	switch (factor->type) {
+	if (factor->negated) {
+		_output(1 + indentationLevel, "[ $NOT$, circle, draw, purple ]\n");
+	}
+	_generateConstant(indentationLevel + 1, factor->constant);
+	_output(indentationLevel, "%s", "]\n");
+}
+
+/**
+ * Generates the output of a constant.
+ */
+static void _generateConstant(const unsigned int indentationLevel, Constant * constant) {
+	_output(indentationLevel, "%s", "[ $C$, circle, draw, black!20\n");
+	switch (constant->type) {
 		case TAG:
-			_generateTag(1 + indentationLevel, factor->tag);
+			_generateTag(1 + indentationLevel, constant->tag);
 			break;
 		case METATAG:
-			_generateMetatag(1 + indentationLevel, factor->metatag);
+			_generateMetatag(1 + indentationLevel, constant->metatag);
 			break;
 		case EXPRESSION:
 			_output(1 + indentationLevel, "%s", "[ $($, circle, draw, purple ]\n");
-			_generateExpression(1 + indentationLevel, factor->expression);
+			_generateExpression(1 + indentationLevel, constant->expression);
 			_output(1 + indentationLevel, "%s", "[ $)$, circle, draw, purple ]\n");
 			break;
 		default:
-			logError(_logger, "The specified factor type is unknown: %d", factor->type);
+			logError(_logger, "The specified constant type is unknown: %d", constant->type);
 			break;
 	}
 	_output(indentationLevel, "%s", "]\n");

@@ -162,44 +162,44 @@ Expression * ExpressionSemanticAction(Term * term, Expression * next) {
 	return exp;
 }
 
-Term * TermSemanticAction(Base * base, Term * next) {
+Term * TermSemanticAction(Factor * factor, Term * next) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Term * term = calloc(1, sizeof(Term));
-	term->base = base;
+	term->factor = factor;
 	term->next = next;
 	return term;
 }
 
-Base * BaseSemanticAction(Factor * factor, boolean negated) {
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Base * base = calloc(1, sizeof(Base));
-	base->factor = factor;
-	base->negated = negated;
-	return base;
-}
-
-Factor * ExpressionFactorSemanticAction(Expression * expression) {
+Factor * FactorSemanticAction(Constant * constant, boolean negated) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Factor * factor = calloc(1, sizeof(Factor));
-	factor->expression = expression;
-	factor->type = EXPRESSION;
+	factor->constant = constant;
+	factor->negated = negated;
 	return factor;
 }
 
-Factor * TagFactorSemanticAction(Tag * tag){
+Constant * ExpressionConstantSemanticAction(Expression * expression) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->tag = tag;
-	factor->type = TAG;
-	return factor;
+	Constant * constant = calloc(1, sizeof(Constant));
+	constant->expression = expression;
+	constant->type = EXPRESSION;
+	return constant;
 }
 
-Factor * MetatagFactorSemanticAction(Metatag * metatag) {
+Constant * TagConstantSemanticAction(Tag * tag){
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Factor * factor = calloc(1, sizeof(Factor));
-	factor->metatag = metatag;
-	factor->type = METATAG;
-	return factor;
+	Constant * constant = calloc(1, sizeof(Constant));
+	constant->tag = tag;
+	constant->type = TAG;
+	return constant;
+}
+
+Constant * MetatagConstantSemanticAction(Metatag * metatag) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Constant * constant = calloc(1, sizeof(Constant));
+	constant->metatag = metatag;
+	constant->type = METATAG;
+	return constant;
 }
 
 

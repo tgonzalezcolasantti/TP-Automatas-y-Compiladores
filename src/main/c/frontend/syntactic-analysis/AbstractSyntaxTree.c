@@ -101,34 +101,34 @@ void releaseTerm(Term * term) {
 		if (term->next){
 			releaseTerm(term->next);
 		}
-		releaseBase(term->base);
+		releaseFactor(term->factor);
 		free(term);
-	}
-}
-
-void releaseBase(Base * base) {
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (base != NULL) {
-		releaseFactor(base->factor);
-		free(base);
 	}
 }
 
 void releaseFactor(Factor * factor) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (factor != NULL) {
-		switch (factor->type) {
+		releaseConstant(factor->constant);
+		free(factor);
+	}
+}
+
+void releaseConstant(Constant * constant) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (constant != NULL) {
+		switch (constant->type) {
 			case TAG:
-				releaseTag(factor->tag);
+				releaseTag(constant->tag);
 				break;			
 			case METATAG:
-				releaseMetatag(factor->metatag);
+				releaseMetatag(constant->metatag);
 				break;
 			case EXPRESSION:
-				releaseExpression(factor->expression);
+				releaseExpression(constant->expression);
 				break;
 		}
-		free(factor);
+		free(constant);
 	}
 }
 

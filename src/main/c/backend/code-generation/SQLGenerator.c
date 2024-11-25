@@ -28,8 +28,8 @@ static void _generateExpression(const unsigned int indentationLevel, Expression 
 static void _generateExpressionRecursive(const unsigned int indentationLevel, Expression * expression);//OK
 static void _generateTerm(const unsigned int indentationLevel, Term * term);						//OK
 static void _generateTermRecursive(const unsigned int indentationLevel, Term * term);				//OK
-static void _generateBase(const unsigned int indentationLevel, Base * base);						//OK
-static void _generateFactor(const unsigned int indentationLevel, Factor * factor);					//OK
+static void _generateFactor(const unsigned int indentationLevel, Factor * factor);						//OK
+static void _generateConstant(const unsigned int indentationLevel, Constant * constant);					//OK
 static void _generateTag(const unsigned int indentationLevel, Tag * t);								//OK
 static void _generateMetatag(const unsigned int indentationLevel, Metatag * m);						//OK
 static void _generateProgram(Program * program);													//OK
@@ -129,7 +129,7 @@ static void _generateTerm(const unsigned int indentationLevel, Term * term) {
 		_generateTermRecursive(indentationLevel, term);
 		_output(indentationLevel, ") ");
 	} else {
-		_generateBase(indentationLevel, term->base);
+		_generateFactor(indentationLevel, term->factor);
 	}
 }
 
@@ -137,7 +137,7 @@ static void _generateTerm(const unsigned int indentationLevel, Term * term) {
  * Generates the innards of a term.
  */
 static void _generateTermRecursive(const unsigned int indentationLevel, Term * term) {
-	_generateBase(1 + indentationLevel, term->base);
+	_generateFactor(1 + indentationLevel, term->factor);
 	if (term->next) {
 		_output(0, " AND ");
 		_generateTermRecursive(indentationLevel, term->next);
@@ -147,37 +147,37 @@ static void _generateTermRecursive(const unsigned int indentationLevel, Term * t
 }
 
 /**
- * Generates the output of a base.
- */
-static void _generateBase(const unsigned int indentationLevel, Base * base) {
-	if (base->negated){
-		_output(0, "NOT ");
-	}
-	_generateFactor(indentationLevel, base->factor);
-}
-
-/**
  * Generates the output of a factor.
  */
 static void _generateFactor(const unsigned int indentationLevel, Factor * factor) {
-	switch (factor->type) {
+	if (factor->negated){
+		_output(0, "NOT ");
+	}
+	_generateConstant(indentationLevel, factor->constant);
+}
+
+/**
+ * Generates the output of a constant.
+ */
+static void _generateConstant(const unsigned int indentationLevel, Constant * constant) {
+	switch (constant->type) {
 		case TAG:
 			_output(0, "EXISTS(\n");
-			_generateTag(indentationLevel + 1, factor->tag);
+			_generateTag(indentationLevel + 1, constant->tag);
 			_output(0, "\n");
 			_output(indentationLevel, ")");
 			break;
 		case METATAG:
 			_output(0, "EXISTS(\n");
-			_generateMetatag(indentationLevel + 1, factor->metatag);
+			_generateMetatag(indentationLevel + 1, constant->metatag);
 			_output(0, "\n");
 			_output(indentationLevel, ")");
 			break;
 		case EXPRESSION:
-			_generateExpression(indentationLevel, factor->expression);
+			_generateExpression(indentationLevel, constant->expression);
 			break;
 		default:
-			logError(_logger, "The specified factor type is unknown: %d", factor->type);
+			logError(_logger, "The specified constant type is unknown: %d", constant->type);
 			break;
 	}
 }
@@ -439,7 +439,7 @@ static void _generateQuantifier(QuantifierType q) {
 
 /**
  * Creates the prologue of the generated query, an irrestricted SELECT statement.
- * It will later have restrictions applied based on the given query
+ * It will later have restrictions applied factord on the given query
  */
 static void _generatePrologue(void) {
 	_output(0, "%s", "SELECT file.fileID as ID, filename, appuser.username AS creator, createdon AS created_on,\n"

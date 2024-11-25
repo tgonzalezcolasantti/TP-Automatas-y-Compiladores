@@ -29,7 +29,7 @@ static void _appendSymbol(Symbol * symbol);
 static Subquery * _searchPredicate(char * name, Symbol * start);
 static void _printSymbolTable(Symbol * s);
 static void _printSymbolTableRecursive(Symbol * s);
-static boolean _addBaseRec(Base * base, unsigned int scope, Symbol * start);
+static boolean _addFactorRec(Factor * factor, unsigned int scope, Symbol * start);
 static boolean _checkDuplicateSymbol(Symbol * new, Symbol * start);
 
 static Symbol * _getLastSymbol(Symbol * start) {
@@ -120,51 +120,51 @@ static Scope * _getLastScope(Scope * start) {
     }
 }
 
-static Symbol * _createBaseSymbol(Base * base, unsigned int scope) {
+static Symbol * _createFactorSymbol(Factor * factor, unsigned int scope) {
     logDebugging(_logger, "%s", __FUNCTION__);
     Symbol * new = calloc(1, sizeof(Symbol));
-    new->negated = base->negated;
+    new->negated = factor->negated;
     new->scope = scope;
-    switch(base->factor->type) {
+    switch(factor->constant->type) {
         case TAG:
             new->type = SYMBOL_TAG;
-            new->name = base->factor->tag->tagname->string;
+            new->name = factor->constant->tag->tagname->string;
             return new;
         case METATAG:
             new->type = SYMBOL_METATAG;
-            new->metatag = base->factor->metatag->metatag;
-            switch(base->factor->metatag->type) {
+            new->metatag = factor->constant->metatag->metatag;
+            switch(factor->constant->metatag->type) {
                 case TYPESTRING:
                 case TYPERECALL:
                     new->quant = MATCH;
-                    new->name = base->factor->metatag->string->string;
+                    new->name = factor->constant->metatag->string->string;
                     break;
                 case TYPEINTEGER:
-                    new->quant = base->factor->metatag->integer->fieldtype;
+                    new->quant = factor->constant->metatag->integer->fieldtype;
                     break;                
                 case TYPEDATE:
-                    new->quant = base->factor->metatag->date->fieldtype;
+                    new->quant = factor->constant->metatag->date->fieldtype;
                     break;                
                 case TYPESIZE:
-                    new->quant = base->factor->metatag->size->fieldtype;
+                    new->quant = factor->constant->metatag->size->fieldtype;
                     break;      
             }
             return new;
         default:
-            logCritical(_logger, "Attempting to parse an invalid base for symbol table");
+            logCritical(_logger, "Attempting to parse an invalid factor for symbol table");
             free(new);
             return NULL;
     }
 }
 
-static boolean _addBaseRec(Base * base, unsigned int scope, Symbol * start){
-    Symbol * new = _createBaseSymbol(base, scope);
+static boolean _addFactorRec(Factor * factor, unsigned int scope, Symbol * start){
+    Symbol * new = _createFactorSymbol(factor, scope);
     if (!_checkDuplicateSymbol(new, start)) {
         if (start->next == NULL) {
             start->next = new;
             return true;
         } else {
-            return _addBaseRec(base, scope, start->next);
+            return _addFactorRec(factor, scope, start->next);
         }
     }
     logWarning(_logger, "Duplicate symbol within scope found for:");
@@ -254,17 +254,17 @@ Expression * getPredicate(char * name) {
 }
 
 /**
- * adds a base (aka tag or metatag) to the symbol table if it has not been added already
- * bases with expressions are not evaluated in this instance.
+ * adds a factor (aka tag or metatag) to the symbol table if it has not been added already
+ * factors with expressions are not evaluated in this instance.
  * returns true if added successfully (and thus unique up until now), or false if duplicated.
  */
-boolean addBase(Base * base, int scope) {
+boolean addFactor(Factor * factor, int scope) {
     logDebugging(_logger, "%s", __FUNCTION__);
     if (symbolRoot == NULL) {
-        symbolRoot = _createBaseSymbol(base, scope);
+        symbolRoot = _createFactorSymbol(factor, scope);
         return true;
     } else {
-        return _addBaseRec(base, scope, symbolRoot);
+        return _addFactorRec(factor, scope, symbolRoot);
     }
 }
 

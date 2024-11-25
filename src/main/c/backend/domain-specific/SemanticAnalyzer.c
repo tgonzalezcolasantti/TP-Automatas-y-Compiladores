@@ -20,7 +20,7 @@ void shutdownSemanticAnalyzerModule() {
 static boolean _processSubqueries(Subqueries * subqueries);
 static boolean _validateExpression(Expression * expression);
 static boolean _validateTerm(Term * term);
-static boolean _validateBase(Base * base);
+static boolean _validateFactor(Factor * factor);
 
 static boolean _processSubqueries(Subqueries * subqueries) {
     logDebugging(_logger, "%s", __FUNCTION__);
@@ -53,17 +53,17 @@ static boolean _validateTerm(Term * term) {
     if (term == NULL) {
         return true;
     }
-    return _validateBase(term->base) && _validateTerm(term->next);
+    return _validateFactor(term->factor) && _validateTerm(term->next);
 }
 
-static boolean _validateBase(Base * base) {
-    if (base == NULL) {
+static boolean _validateFactor(Factor * factor) {
+    if (factor == NULL) {
         return true;
     }
-    if (base->factor->type == EXPRESSION) {
-        return _validateExpression(base->factor->expression);
+    if (factor->constant->type == EXPRESSION) {
+        return _validateExpression(factor->constant->expression);
     }
-    return addBase(base, peekScope());
+    return addFactor(factor, peekScope());
 }
 
 /** PUBLIC FUNCTIONS */

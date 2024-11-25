@@ -22,8 +22,8 @@
 	Program * program;
 	Expression * expression;
 	Term * term;
-	Base * base;
 	Factor * factor;
+	Constant * constant;
 	Query * query;
 	Subqueries * subqueries;
 	Subquery * subquery;
@@ -49,7 +49,7 @@
 /*
 %destructor { releaseConstant($$); } <constant>
 %destructor { releaseExpression($$); } <expression>
-%destructor { releaseFactor($$); } <factor>
+%destructor { releaseConstant($$); } <constant>
 %destructor { releaseProgram($$); } <program>
 */
 
@@ -91,8 +91,8 @@
 %type <query> query
 %type <expression> expression
 %type <term> term
-%type <base> base
 %type <factor> factor
+%type <constant> constant
 %type <tag> tag
 %type <metatag> metatag
 %type <metaorder> metaorder
@@ -146,17 +146,17 @@ expression: term[left] OR expression[right]							{ $$ = ExpressionSemanticActio
 	| term														    { $$ = ExpressionSemanticAction($1, NULL); }
 	;
 
-term: base[left] term[right]										{ $$ = TermSemanticAction($left, $right); }
-	| base															{ $$ = TermSemanticAction($1, NULL); }
+term: factor[left] term[right]										{ $$ = TermSemanticAction($left, $right); }
+	| factor															{ $$ = TermSemanticAction($1, NULL); }
 	;
 
-base: factor														{ $$ = BaseSemanticAction($1, false); }
-	| NOT factor													{ $$ = BaseSemanticAction($2, true); }
+factor: constant														{ $$ = FactorSemanticAction($1, false); }
+	| NOT constant													{ $$ = FactorSemanticAction($2, true); }
 	;
 
-factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionFactorSemanticAction($2); }
-	| tag															{ $$ = TagFactorSemanticAction($1); }
-	| metatag														{ $$ = MetatagFactorSemanticAction($1); }
+constant: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS				{ $$ = ExpressionConstantSemanticAction($2); }
+	| tag															{ $$ = TagConstantSemanticAction($1); }
+	| metatag														{ $$ = MetatagConstantSemanticAction($1); }
 	;
 
 metatag: STRMETA METATAG_SEPARATOR string							{ $$ = StringMetatagSemanticAction($1, $3); }
